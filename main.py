@@ -7,12 +7,13 @@ from detector.diagram_detector import DiagramDetector
 ap = argparse.ArgumentParser()
 
 if __name__ == '__main__':
-    dd = DiagramDetector()
     img_path = "img/example3.jpg"
 
     # ap.add_argument("-i", "--image", required=True, help="Path to the image you want to detect")
     # args = vars(ap.parse_args())
     # print(args["image"])
 
-    dd.is_class_diagram(img_path)
+    dd = DiagramDetector()
+    dd.load(img_path)
+    dd.is_class_diagram()
     dd.show_result()

@@ -101,18 +101,20 @@ class DiagramDetector:
 
         return image
 
+    def _get_working_copy(self, image):
+        return imutils.resize(image, width=700)
 
-    def is_class_diagram(self, image_path):
+    def load(self, image_path):
+        self.orig_image = cv2.imread(image_path)
+        self.image = self._get_working_copy(self.orig_image)
+
+    def is_class_diagram(self):
         """
         Identifies an image either as class diagram or not.
 
         :param image_path: Path of the image
         :return: true if the image was detected as UML class diagram, false otherwise.
         """
-
-        # Read the image
-        self.orig_image = cv2.imread(image_path)
-        self.image = imutils.resize(self.orig_image, width=700)
 
         # Preprocess the image
         self.print_image_details(self.image)
