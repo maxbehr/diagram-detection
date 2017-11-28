@@ -1,9 +1,11 @@
 import cv2
 import imutils
+import numpy as np
 from detector.shape import Shape
 
 class DiagramDetector:
     def __init__(self):
+        self.orig_image = None
         self.image = None
         print("DiagramDetector initialized")
 
@@ -26,6 +28,13 @@ class DiagramDetector:
 
         return s
 
+    def is_diagram_rect(self, c):
+        x, y, w, h = cv2.boundingRect(c)
+        ratio = self.aspect_ratio(c)
+        area = w * h
+
+        return self.detect_shape(c) == Shape.RECTANGLE and h > w and area > 500 #and ratio < 1
+
     def aspect_ratio(self, c):
         """
         Calculates the aspect ratio of the given contour.
@@ -35,13 +44,17 @@ class DiagramDetector:
         x, y, w, h = cv2.boundingRect(c)
         return float(w) / h
 
+    def image_area(self, image):
+        return image.shape[:2]
+
     def area(self, c):
         """
         Calculates the area of the given contour.
         :param c:
         :return: The area as floati
         """
-        return cv2.contourArea(c)
+        x, y, w, h = cv2.boundingRect(c)
+        return w * h
 
     def detect_contours(self, image):
         """
@@ -59,11 +72,31 @@ class DiagramDetector:
 
         :param c: Countour you want some details of.
         """
-        print("shape: {shape}, aspect_ratio: {ratio}, area: {area}".format(
+        x, y, w, h = cv2.boundingRect(c)
+
+        print("shape: {shape}, aspect_ratio: {ratio}, w: {w}, h: {h}, area: {area}".format(
             shape=self.detect_shape(c),
             ratio=self.aspect_ratio(c),
+            w=w,
+            h=h,
             area=self.area(c)
         ))
+
+    def print_image_details(self, image):
+        height, width = self.image_area(image)
+        print("Image - width: {w}, height: {h}, area: {area}".format(w=width, h=height, area=(width * height)))
+
+    def preprocess(self, image):
+        # Blur image
+        image = cv2.GaussianBlur(image, (5,5), 0)
+
+        # Grayscale image
+        #image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        # Threshold image
+
+        return image
+
 
     def is_class_diagram(self, image_path):
         """
@@ -74,40 +107,58 @@ class DiagramDetector:
         """
 
         # Read the image
-        orig_image = cv2.imread(image_path)
+        self.orig_image = cv2.imread(image_path)
+        self.image = imutils.resize(self.orig_image, width=700)
 
-        # Resize the image
-        self.image = imutils.resize(orig_image, width=600)
+        # Preprocess the image
+        self.image = self.preprocess(self.image)
+        self.print_image_details(self.image)
 
         # Calc the ratio of the image
-        ratio = orig_image.shape[0] / float(self.image.shape[0])
-
-        # Convert the image to grayscale
-        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-        #blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        #thresh = cv2.adaptiveThreshold(gray, 127, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+        ratio = self.orig_image.shape[0] / float(self.image.shape[0])
 
         # Use canny edge detection on resized image
-        canny = cv2.Canny(self.image, 100, 200)
+        canny = cv2.Canny(self.image, 50, 200)
+        canny = cv2.dilate(canny, (3,3), iterations=3)
+
+        # Holds the area of all rects that were defined as class diagram rectangles
+        area_rects = 0
 
         img, contours, hierarchy = self.detect_contours(canny)
+        cv2.imshow("canny", canny)
         for c in contours:
-            self.print_details(c)
+            if self.is_diagram_rect(c):
+                self.print_details(c)
 
-            shape = self.detect_shape(c)
-            M = cv2.moments(c)
-            cX = int((M["m10"] / M["m00"]) * ratio)
-            cY = int((M["m01"] / M["m00"]) * ratio)
+                area_rects += self.area(c)
 
-            c = c.astype("float")
-            c *= ratio
-            c = c.astype("int")
-            cv2.drawContours(self.image, [c], -1, (0, 255, 0), 2)
+                # shape = self.detect_shape(c)
+                # M = cv2.moments(c)
+                # cX = int((M["m10"] / M["m00"]) * ratio)
+                # cY = int((M["m01"] / M["m00"]) * ratio)
+
+                # c = c.astype("float")
+                # c *= ratio
+                # c = c.astype("int")
+                #cv2.drawContours(self.image, [c], -1, (0, 255, 0), 2)
+
+                x, y, w, h = cv2.boundingRect(c)
+                cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        print("sum area: " + str(area_rects))
+
+        # Calculate percentage of rectangle area in image
+        image_height, image_width = self.image_area(self.image)
+        area_rects_percentage = round(area_rects / (image_width * image_height) * 100, 4)
+        print("area of rects: {perc}%".format(perc=area_rects_percentage))
+
 
     def show_result(self):
         """
         Opens the image in a window.
         """
+        cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)
         cv2.imshow("Image", self.image)
         print("Show result image")
         cv2.waitKey()
+        cv2.destroyAllWindows()
