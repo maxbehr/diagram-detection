@@ -8,7 +8,7 @@ ap = argparse.ArgumentParser()
 
 if __name__ == '__main__':
     dd = DiagramDetector()
-    img_path = "img/example2.png"
+    img_path = "img/example3.jpg"
 
     # ap.add_argument("-i", "--image", required=True, help="Path to the image you want to detect")
     # args = vars(ap.parse_args())
