@@ -33,7 +33,7 @@ class DiagramDetector:
         ratio = self.aspect_ratio(c)
         area = w * h
 
-        return self.detect_shape(c) == Shape.RECTANGLE and h > w and area > 500 #and ratio < 1
+        return self.detect_shape(c) == Shape.RECTANGLE #and h > w and area > 200 #and ratio < 1
 
     def aspect_ratio(self, c):
         """
@@ -91,9 +91,13 @@ class DiagramDetector:
         image = cv2.GaussianBlur(image, (5,5), 0)
 
         # Grayscale image
-        #image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        cv2.imshow("gray", image)
 
         # Threshold image
+        _, image = cv2.threshold(image, 135, 255, cv2.THRESH_BINARY_INV)
+        #image = cv2.dilate(image, (15, 15), iterations=3)
+        cv2.imshow("thresh", image)
 
         return image
 
@@ -111,21 +115,20 @@ class DiagramDetector:
         self.image = imutils.resize(self.orig_image, width=700)
 
         # Preprocess the image
-        self.image = self.preprocess(self.image)
         self.print_image_details(self.image)
+        proc_image = self.preprocess(self.image)
 
         # Calc the ratio of the image
-        ratio = self.orig_image.shape[0] / float(self.image.shape[0])
+        #ratio = self.orig_image.shape[0] / float(self.image.shape[0])
 
         # Use canny edge detection on resized image
-        canny = cv2.Canny(self.image, 50, 200)
-        canny = cv2.dilate(canny, (3,3), iterations=3)
+        #canny = cv2.Canny(self.image, 100, 100)
+        #canny = cv2.dilate(canny, (3,3), iterations=5)
+        # cv2.imshow("canny", canny)
 
         # Holds the area of all rects that were defined as class diagram rectangles
         area_rects = 0
-
-        img, contours, hierarchy = self.detect_contours(canny)
-        cv2.imshow("canny", canny)
+        img, contours, hierarchy = self.detect_contours(proc_image)
 
         found_diagram_rects = []
         for c in contours:
