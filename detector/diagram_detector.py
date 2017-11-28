@@ -18,7 +18,7 @@ class DiagramDetector:
         s = Shape.UNIDENTIFIED
 
         peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.1 * peri, True)
+        approx = cv2.approxPolyDP(c, 0.05 * peri, True)
 
         if len(approx) == 3:
             s = Shape.TRIANGLE
