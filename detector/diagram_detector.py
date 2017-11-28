@@ -126,10 +126,13 @@ class DiagramDetector:
 
         img, contours, hierarchy = self.detect_contours(canny)
         cv2.imshow("canny", canny)
+
+        found_diagram_rects = []
         for c in contours:
             if self.is_diagram_rect(c):
                 self.print_details(c)
 
+                found_diagram_rects.append(c)
                 area_rects += self.area(c)
 
                 # shape = self.detect_shape(c)
@@ -145,12 +148,10 @@ class DiagramDetector:
                 x, y, w, h = cv2.boundingRect(c)
                 cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-        print("sum area: " + str(area_rects))
-
         # Calculate percentage of rectangle area in image
         image_height, image_width = self.image_area(self.image)
         area_rects_percentage = round(area_rects / (image_width * image_height) * 100, 4)
-        print("area of rects: {perc}%".format(perc=area_rects_percentage))
+        print("Found rects: {amount}, area: {area} ({perc}%)".format(amount=len(found_diagram_rects), area=area_rects, perc=area_rects_percentage))
 
 
     def show_result(self):
@@ -159,6 +160,5 @@ class DiagramDetector:
         """
         cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)
         cv2.imshow("Image", self.image)
-        print("Show result image")
         cv2.waitKey()
         cv2.destroyAllWindows()
