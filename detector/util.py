@@ -1,6 +1,9 @@
 import cv2
 from detector.shape import Shape
 
+# Defines the accuracy for contour detection
+EPSILON_FACTOR = 0.1
+
 
 def aspect_ratio(c):
     """
@@ -34,8 +37,13 @@ def print_contour_details(c):
     """
     x, y, w, h = cv2.boundingRect(c)
 
-    print("shape: {shape}, aspect_ratio: {ratio}, w: {w}, h: {h}, area: {area}".format(
+    peri = cv2.arcLength(c, True)
+    approx = cv2.approxPolyDP(c, EPSILON_FACTOR * peri, True)
+    sides = len(approx)
+
+    print("shape: {shape}, sides: {sides}, ratio: {ratio}, w: {w}, h: {h}, area: {area}".format(
         shape=detect_shape(c),
+        sides=sides,
         ratio=aspect_ratio(c),
         w=w,
         h=h,
@@ -71,8 +79,8 @@ def detect_shape(c):
     :param c:
     :return: The shape of type Shape
     """
-    peri = cv2.arcLength(c, True)
-    approx = cv2.approxPolyDP(c, 0.05 * peri, True)
+    peri = cv2.arcLength(c, False)
+    approx = cv2.approxPolyDP(c, EPSILON_FACTOR * peri, True)
 
     if len(approx) == 3:
         return Shape.TRIANGLE
