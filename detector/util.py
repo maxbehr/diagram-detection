@@ -71,15 +71,25 @@ def detect_shape(c):
     :param c:
     :return: The shape of type Shape
     """
-    s = Shape.UNIDENTIFIED
-
     peri = cv2.arcLength(c, True)
     approx = cv2.approxPolyDP(c, 0.05 * peri, True)
 
     if len(approx) == 3:
-        s = Shape.TRIANGLE
+        return Shape.TRIANGLE
 
     if len(approx) == 4:
-        s = Shape.RECTANGLE
+        (x, y, w, h) = cv2.boundingRect(approx)
+        ratio = w / float(h)
 
-    return s
+        if 0.9 <= ratio <= 1.1:
+            return Shape.SQUARE
+        else:
+            return Shape.RECTANGLE
+
+    if len(approx) == 5:
+        return Shape.PENTAGON
+
+    if len(approx) >= 6:
+        return Shape.CIRCLE
+
+    return Shape.UNIDENTIFIED

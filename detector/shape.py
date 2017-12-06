@@ -1,4 +1,7 @@
 class Shape:
     UNIDENTIFIED = 0
     TRIANGLE = 1
-    RECTANGLE = 2
+    SQUARE = 2
+    RECTANGLE = 3
+    PENTAGON = 4
+    CIRCLE = 5
