@@ -1,8 +1,10 @@
 import cv2
 import imutils
+from imutils import contours
 from detector.util import *
 import numpy as np
 from detector.shape import Shape
+
 
 class DiagramDetector:
     def __init__(self):
@@ -10,51 +12,13 @@ class DiagramDetector:
         self.image = None
         print("DiagramDetector initialized")
 
-    def _detect_shape(self, c):
-        """
-        Identifies the given contour as shape.
-        :param c:
-        :return: The shape of type Shape
-        """
-        s = Shape.UNIDENTIFIED
-
-        peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.05 * peri, True)
-
-        if len(approx) == 3:
-            s = Shape.TRIANGLE
-
-        if len(approx) == 4:
-            s = Shape.RECTANGLE
-
-        return s
-
     def _is_diagram_rect(self, c):
         x, y, w, h = cv2.boundingRect(c)
         ratio = aspect_ratio(c)
         area = w * h
 
-        return self._detect_shape(c) == Shape.RECTANGLE #and h > w and area > 200 #and ratio < 1
+        return detect_shape(c) == Shape.RECTANGLE #and h > w and area > 200 #and ratio < 1
 
-    def _print_contour_details(self, c):
-        """
-        Prints some detailed information of the given contour.
-
-        :param c: Countour you want some details of.
-        """
-        x, y, w, h = cv2.boundingRect(c)
-
-        print("shape: {shape}, aspect_ratio: {ratio}, w: {w}, h: {h}, area: {area}".format(
-            shape=self._detect_shape(c),
-            ratio=aspect_ratio(c),
-            w=w,
-            h=h,
-            area=area_contour(c)
-        ))
-
-    def print_image_details(self, image):
-        height, width = image_area(image)
-        print("Image - width: {w}, height: {h}, area: {area}".format(w=width, h=height, area=(width * height)))
 
     def _preprocess(self, image):
         # Blur image
@@ -87,7 +51,8 @@ class DiagramDetector:
         """
 
         # Preprocess the image
-        self.print_image_details(self.image)
+        im = self.image
+        print_image_details(im)
         proc_image = self._preprocess(self.image)
 
         # Calc the ratio of the image
@@ -100,12 +65,21 @@ class DiagramDetector:
 
         # Holds the area of all rects that were defined as class diagram rectangles
         area_rects = 0
-        img, contours, hierarchy = detect_contours(proc_image)
+        # img, contours, hierarchy = detect_contours(proc_image)
+        cnts = detect_contours(proc_image)
+        cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+        cnts = contours.sort_contours(cnts, method="left-to-right")[0]
+        #cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:2]
 
+        bounding_boxes = {}
         found_diagram_rects = []
-        for c in contours:
+        for (i, c) in enumerate(cnts):
+            # (x, y, w, h) = cv2.boundingRect(c)
+            # roi = proc_image[y:y + h, x:x + w]
+            # bounding_boxes[i] = roi
+
             if self._is_diagram_rect(c):
-                self._print_contour_details(c)
+                print_contour_details(c)
 
                 found_diagram_rects.append(c)
                 area_rects += area_contour(c)
@@ -120,7 +94,9 @@ class DiagramDetector:
                 # c = c.astype("int")
                 #cv2.drawContours(self.image, [c], -1, (0, 255, 0), 2)
 
-                x, y, w, h = cv2.boundingRect(c)
+                (x, y, w, h) = cv2.boundingRect(c)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                #cv2.putText(self.image, str(i), (int(x/2), int(y/2)), font, 1, (0, 0, 0), 2, cv2.LINE_AA)
                 cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), -1)
 
         # Calculate percentage of rectangle area in image
