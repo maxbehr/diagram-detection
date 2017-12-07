@@ -1,5 +1,5 @@
 import cv2
-from detector.shape import Shape
+from detector.shape_type import ShapeType
 
 # Defines the accuracy for contour detection
 EPSILON_FACTOR = 0.1
@@ -83,21 +83,21 @@ def detect_shape(c):
     approx = cv2.approxPolyDP(c, EPSILON_FACTOR * peri, True)
 
     if len(approx) == 3:
-        return Shape.TRIANGLE
+        return ShapeType.TRIANGLE
 
     if len(approx) == 4:
         (x, y, w, h) = cv2.boundingRect(approx)
         ratio = w / float(h)
 
         if 0.9 <= ratio <= 1.1:
-            return Shape.SQUARE
+            return ShapeType.SQUARE
         else:
-            return Shape.RECTANGLE
+            return ShapeType.RECTANGLE
 
     if len(approx) == 5:
-        return Shape.PENTAGON
+        return ShapeType.PENTAGON
 
     if len(approx) >= 6:
-        return Shape.CIRCLE
+        return ShapeType.CIRCLE
 
-    return Shape.UNIDENTIFIED
+    return ShapeType.UNIDENTIFIED

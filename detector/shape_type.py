@@ -1,4 +1,4 @@
-class Shape:
+class ShapeType:
     UNIDENTIFIED = 0
     TRIANGLE = 1
     SQUARE = 2
