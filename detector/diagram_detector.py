@@ -3,8 +3,8 @@ import imutils
 from imutils import contours
 from detector.util import *
 import numpy as np
-from detector.shape import Shape
-
+from detector.shape_type import ShapeType
+from detector.diagram.shape import Shape
 
 class DiagramDetector:
     def __init__(self):
@@ -17,7 +17,7 @@ class DiagramDetector:
         ratio = aspect_ratio(c)
         area = w * h
 
-        return detect_shape(c) == Shape.RECTANGLE #and h > w and area > 200 #and ratio < 1
+        return detect_shape(c) == ShapeType.RECTANGLE #and h > w and area > 200 #and ratio < 1
 
 
     def _preprocess(self, image):
@@ -72,32 +72,50 @@ class DiagramDetector:
         #cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:2]
 
         bounding_boxes = {}
+        found_shapes = []
         found_diagram_rects = []
         for (i, c) in enumerate(cnts):
-            # (x, y, w, h) = cv2.boundingRect(c)
+            shape = Shape(c)
+            found_shapes.append(shape);
+            shape.print_info()
+
+            (x, y, w, h) = shape.bounding_rect()
             # roi = proc_image[y:y + h, x:x + w]
             # bounding_boxes[i] = roi
 
-            if self._is_diagram_rect(c):
-                print_contour_details(c)
+            area_rects += shape.area()
 
-                found_diagram_rects.append(c)
-                area_rects += area_contour(c)
+            cv2.drawContours(self.image, [c], -1, (0, 255, 0), 2)
 
-                # shape = self.detect_shape(c)
-                # M = cv2.moments(c)
-                # cX = int((M["m10"] / M["m00"]) * ratio)
-                # cY = int((M["m01"] / M["m00"]) * ratio)
+            M = shape.moments()
+            cX = int((M["m10"] / M["m00"]))
+            cY = int((M["m01"] / M["m00"]))
+            cv2.putText(self.image, "s"+str(i), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5, (0, 0, 0), 1)
 
-                # c = c.astype("float")
-                # c *= ratio
-                # c = c.astype("int")
-                #cv2.drawContours(self.image, [c], -1, (0, 255, 0), 2)
+            cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), -1)
 
-                (x, y, w, h) = cv2.boundingRect(c)
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                #cv2.putText(self.image, str(i), (int(x/2), int(y/2)), font, 1, (0, 0, 0), 2, cv2.LINE_AA)
-                cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), -1)
+            # if self._is_diagram_rect(c):
+            #     print_contour_details(c)
+            #
+            #     found_diagram_rects.append(c)
+            #     area_rects += area_contour(c)
+            #
+            #     # shape = self.detect_shape(c)
+            #     # M = cv2.moments(c)
+            #     # cX = int((M["m10"] / M["m00"]) * ratio)
+            #     # cY = int((M["m01"] / M["m00"]) * ratio)
+            #
+            #     # c = c.astype("float")
+            #     # c *= ratio
+            #     # c = c.astype("int")
+            #     cv2.drawContours(self.image, [c], -1, (0, 255, 0), 2)
+            #
+            #     (x, y, w, h) = cv2.boundingRect(c)
+            #     font = cv2.FONT_HERSHEY_SIMPLEX
+            #     #cv2.putText(self.image, str(i), (int(x/2), int(y/2)), font, 1, (0, 0, 0), 2, cv2.LINE_AA)
+            #     #cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), -1)
+
 
         # Calculate percentage of rectangle area in image
         image_height, image_width = image_area(self.image)
