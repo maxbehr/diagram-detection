@@ -41,8 +41,11 @@ def print_contour_details(c):
     approx = cv2.approxPolyDP(c, EPSILON_FACTOR * peri, True)
     sides = len(approx)
 
+    shape_type = detect_shape(c)
+    shape = ShapeType.to_s(shape_type=shape_type)
+
     print("shape: {shape}, sides: {sides}, ratio: {ratio}, w: {w}, h: {h}, area: {area}".format(
-        shape=detect_shape(c),
+        shape=shape,
         sides=sides,
         ratio=aspect_ratio(c),
         w=w,
