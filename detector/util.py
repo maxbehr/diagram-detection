@@ -82,7 +82,7 @@ def detect_shape(c):
     :param c:
     :return: The shape of type Shape
     """
-    peri = cv2.arcLength(c, False)
+    peri = cv2.arcLength(c, True)
     approx = cv2.approxPolyDP(c, EPSILON_FACTOR * peri, True)
 
     if len(approx) == 3:
