@@ -1,5 +1,6 @@
 import cv2
 import detector.util as util
+from detector.shape_type import ShapeType
 
 
 class Shape:
@@ -34,6 +35,9 @@ class Shape:
         :return:
         """
         return cv2.moments(self.contour)
+
+    def shape_name(self):
+        return ShapeType.to_s(self.shape)
 
     def print_info(self):
         """

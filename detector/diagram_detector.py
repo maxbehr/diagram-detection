@@ -90,7 +90,7 @@ class DiagramDetector:
             M = shape.moments()
             cX = int((M["m10"] / M["m00"]))
             cY = int((M["m01"] / M["m00"]))
-            cv2.putText(self.image, "s"+str(i), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
+            cv2.putText(self.image, shape.shape_name(), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
                         0.5, (0, 0, 0), 1)
 
             cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), -1)
