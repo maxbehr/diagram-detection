@@ -62,7 +62,10 @@ class DiagramDetector:
 
         found_shapes = []
         for (i, c) in enumerate(cnts):
-            found_shapes.append(Shape(c))
+            shape = Shape(c)
+            x, y, w, h = cv2.boundingRect(c)
+            shape.set_image(image[y:y+h, x:x+w])
+            found_shapes.append(shape)
 
         return found_shapes
 

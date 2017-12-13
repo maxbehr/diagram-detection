@@ -6,6 +6,7 @@ from detector.shape_type import ShapeType
 class Shape:
     def __init__(self, contour):
         self.type = None
+        self.image = None
         self.contour = contour
         self.shape = util.detect_shape(contour)
 
@@ -14,6 +15,9 @@ class Shape:
         self.h = h
         self.x = x
         self.y = y
+
+    def set_image(self, image):
+        self.image = image
 
     def area(self):
         """
