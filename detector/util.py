@@ -2,7 +2,7 @@ import cv2
 from detector.shape_type import ShapeType
 
 # Defines the accuracy for contour detection
-EPSILON_FACTOR = 0.1
+EPSILON_FACTOR = 0.04
 
 
 def aspect_ratio(c):
