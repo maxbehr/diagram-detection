@@ -46,20 +46,17 @@ class DiagramDetector:
     def get_shapes(self):
         return self.shapes
 
-    def analyze(self):
+    def find_shapes(self, image):
         """
-        Preprocesses the images and looks for its contours which are transformed into Shapes. All found Shapes are then
+        Looks for contours in the given image which are then transformed into Shapes. All found Shapes are then
         returned as an array.
+
         :return: Array with all found shapes
         """
-
-        # Preprocess the image
-        proc_image = self._preprocess(self.image)
-
         # Holds the area of all rects that were defined as class diagram rectangles
         area_rects = 0
         # img, contours, hierarchy = detect_contours(proc_image)
-        cnts = detect_contours(proc_image)
+        cnts = detect_contours(image)
         cnts = cnts[0] if imutils.is_cv2() else cnts[1]
         cnts = contours.sort_contours(cnts, method="left-to-right")[0]
 
@@ -90,8 +87,10 @@ class DiagramDetector:
 
         return self.image
 
-    def find_shapes(self):
-        self.shapes = self.analyze()
+    def analyze(self):
+        # Preprocess the image
+        proc_image = self._preprocess(self.image)
+        self.shapes = self.find_shapes(proc_image)
         return self.get_analyzed_image()
 
     def is_class_diagram(self):
