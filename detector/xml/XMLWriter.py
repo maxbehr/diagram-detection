@@ -12,11 +12,12 @@ class XMLWriter:
         Writes the given shapes to the output file.
         :return:
         """
-        file = open(self.file, "w")
-        file.write(self.prettify(elem))
-        file.close()
+        print(self.prettify(elem))
+        # file = open(self.file, "w")
+        # file.write(self.prettify(elem))
+        # file.close()
 
-    def prettify(elem):
+    def prettify(self, elem):
         """
         Takes the given element and returns it as a prettified XML.
         """
