@@ -15,6 +15,7 @@ if __name__ == '__main__':
 
     dd = DiagramDetector()
     dd.load(img_path)
-    analyzed_image = dd.analyze()
+    shapes, analyzed_image = dd.analyze()
+    
     #dd.is_class_diagram()
     dd.show_result()

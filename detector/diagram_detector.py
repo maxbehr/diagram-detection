@@ -91,7 +91,7 @@ class DiagramDetector:
         # Preprocess the image
         proc_image = self._preprocess(self.image)
         self.shapes = self.find_shapes(proc_image)
-        return self.get_analyzed_image()
+        return self.shapes, self.get_analyzed_image()
 
     def is_class_diagram(self):
         """
