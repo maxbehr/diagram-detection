@@ -1,4 +1,5 @@
 import cv2
+import os
 import detector.util as util
 from detector.shape_type import ShapeType
 
@@ -15,6 +16,22 @@ class Shape:
         self.h = h
         self.x = x
         self.y = y
+
+    def save_image(self, filename):
+        """
+        Saves the shape to disk.
+        :param filename: Name of the saved file.
+        :return:
+        """
+        self.output_filename = "{}.png".format(filename)
+        cv2.imwrite(self.output_filename, self.image)
+
+    def remove_image(self):
+        """
+        Removes the saved image.
+        :return:
+        """
+        os.remove(self.output_filename)
 
     def set_image(self, image):
         self.image = image
