@@ -13,6 +13,8 @@ name = "pypi"
 
 imutils = "*"
 opencv-python = "*"
+pillow = "*"
+pytesseract = "*"
 
 
 [requires]
