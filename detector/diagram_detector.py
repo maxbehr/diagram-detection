@@ -10,6 +10,7 @@ class DiagramDetector:
     def __init__(self):
         self.orig_image = None
         self.image = None
+        self.shapes = []
         print("DiagramDetector initialized")
 
     def _is_diagram_rect(self, c):
@@ -41,6 +42,57 @@ class DiagramDetector:
     def load(self, image_path):
         self.orig_image = cv2.imread(image_path)
         self.image = self._get_working_copy(self.orig_image)
+
+    def get_shapes(self):
+        return self.shapes
+
+    def analyze(self):
+        """
+        Preprocesses the images and looks for its contours which are transformed into Shapes. All found Shapes are then
+        returned as an array.
+        :return: Array with all found shapes
+        """
+
+        # Preprocess the image
+        proc_image = self._preprocess(self.image)
+
+        # Holds the area of all rects that were defined as class diagram rectangles
+        area_rects = 0
+        # img, contours, hierarchy = detect_contours(proc_image)
+        cnts = detect_contours(proc_image)
+        cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+        cnts = contours.sort_contours(cnts, method="left-to-right")[0]
+
+        found_shapes = []
+        for (i, c) in enumerate(cnts):
+            found_shapes.append(Shape(c))
+
+        return found_shapes
+
+    def get_analyzed_image(self):
+        area_rects = 0
+        for (i, shape) in enumerate(self.shapes):
+            shape.print_info()
+
+            area_rects += shape.area()
+
+            cv2.drawContours(self.image, [shape.contour], 0, (0, 255, 0), 2)
+
+            M = shape.moments()
+            cX = int((M["m10"] / M["m00"]))
+            cY = int((M["m01"] / M["m00"]))
+            cv2.putText(self.image, shape.shape_name(), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+
+        # Calculate percentage of rectangle area in image
+        image_height, image_width = image_area(self.image)
+        area_rects_percentage = round(area_rects / (image_width * image_height) * 100, 4)
+        print("Found rects: {amount}, area: {area} ({perc}%)".format(amount=len(self.shapes), area=area_rects, perc=area_rects_percentage))
+
+        return self.image
+
+    def find_shapes(self):
+        self.shapes = self.analyze()
+        return self.get_analyzed_image()
 
     def is_class_diagram(self):
         """
