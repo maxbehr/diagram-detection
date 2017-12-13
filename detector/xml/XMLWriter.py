@@ -13,9 +13,9 @@ class XMLWriter:
         :return:
         """
         print(self.prettify(elem))
-        # file = open(self.file, "w")
-        # file.write(self.prettify(elem))
-        # file.close()
+        file = open(self.file, "w")
+        file.write(self.prettify(elem))
+        file.close()
 
     def prettify(self, elem):
         """

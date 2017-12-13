@@ -3,8 +3,10 @@ import imutils
 import numpy as np
 import argparse
 from detector.diagram_detector import DiagramDetector
+from detector.xml.ShapeWriter import ShapeWriter
 
 ap = argparse.ArgumentParser()
+output_file = "./output/found_shapes.xml"
 
 if __name__ == '__main__':
     img_path = "img/example3.jpg"
@@ -18,4 +20,7 @@ if __name__ == '__main__':
     shapes, analyzed_image = dd.analyze()
     
     #dd.is_class_diagram()
-    dd.show_result()
+    #dd.show_result()
+
+    writer = ShapeWriter(shapes, output_file)
+    writer.write(shapes)
