@@ -15,6 +15,7 @@ imutils = "*"
 opencv-python = "*"
 pillow = "*"
 pytesseract = "*"
+tesseract-ocr = "*"
 
 
 [requires]
