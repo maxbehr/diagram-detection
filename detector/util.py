@@ -1,5 +1,8 @@
 import cv2
+import os
 from detector.shape_type import ShapeType
+import pytesseract
+from PIL import Image
 
 # Defines the accuracy for contour detection
 EPSILON_FACTOR = 0.04
@@ -104,3 +107,30 @@ def detect_shape(c):
         return ShapeType.CIRCLE
 
     return ShapeType.UNIDENTIFIED
+
+
+def save_image(image, filename):
+    """
+    Saves the given image to the disk.
+    :param filename: Name of the saved file.
+    :return:
+    """
+    cv2.imwrite(filename, image)
+
+
+def ocr(image):
+    if os.path.isfile(image):
+        text = pytesseract.image_to_string(Image.open(image))
+        print("OCR: {text}".format(text=text))
+    else:
+        print("shape ocr: File doesn't exist")
+
+
+def crop_area(x, y, w, h, image):
+    """
+    Crops the given area from the given image and returns the pixel data for the cropped area.
+    :param area: Area as tuple (x, y, w, h)
+    :param image: Image we want to crop the area from
+    :return: Array with the pixel data of the cropped area
+    """
+    return image[y:y+h, x:x+w]
