@@ -18,14 +18,12 @@ class ClassDiagramDetector:
         self.cnts = None
         """ Holds all contours of the image this class diagram detector was applied to """
 
-        print("ClassDiagramDetector initialized")
+        log("ClassDiagramDetector initialized")
 
     def detect(self, image):
         self.shape_hierarchy, self.cnts = util.create_shape_hierarchy(image)
-        print("shape hierarchy")
         for k, v in self.shape_hierarchy.items():
-            print("contour " + str(k) + " has " + str(len(v)) + " children")
-        print("use case detection")
+            util.log("contour " + str(k) + " has " + str(len(v)) + " children")
 
 
     def get_class_shape_contours(self, image):

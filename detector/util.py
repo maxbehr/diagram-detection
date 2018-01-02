@@ -48,14 +48,7 @@ def print_contour_details(c):
     shape_type = detect_shape(c)
     shape = ShapeType.to_s(shape_type=shape_type)
 
-    print("shape: {shape}, sides: {sides}, ratio: {ratio}, w: {w}, h: {h}, area: {area}".format(
-        shape=shape,
-        sides=sides,
-        ratio=aspect_ratio(c),
-        w=w,
-        h=h,
-        area=area_contour(c)
-    ))
+    log(f"shape: {shape}, sides: {sides}, ratio: {aspect_ratio(c)}, w: {w}, h: {h}, area: {area_contour(c)}")
 
 
 def print_image_details(image):
@@ -66,7 +59,7 @@ def print_image_details(image):
     """
 
     height, width = image_area(image)
-    print("Image - width: {w}, height: {h}, area: {area}".format(w=width, h=height, area=(width * height)))
+    log(f"Image - width: {width}, height: {height}, area: {width*height}")
 
 
 def detect_contours(image):
@@ -122,9 +115,9 @@ def save_image(image, filename):
 def ocr(image):
     if os.path.isfile(image):
         text = pytesseract.image_to_string(Image.open(image))
-        print("OCR: {text}".format(text=text))
+        log("Found OCR text: {text}".format(text=text))
     else:
-        print("shape ocr: File doesn't exist")
+        log("Shape::OCR: File doesn't exist")
 
 
 def crop_area(x, y, w, h, image):
@@ -189,7 +182,7 @@ def draw_contours_on_image(contours, image):
     :return:
     """
 
-    print("Draw "+ str(len(contours)) +" contours")
+    log(f"Draw {len(contours)} contours")
     cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
 
 

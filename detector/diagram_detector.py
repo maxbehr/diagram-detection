@@ -14,7 +14,7 @@ class DiagramDetector:
         self.image = None
         self.preprocessed_gray = None
         self.shapes = []
-        print("DiagramDetector initialized")
+        util.log("DiagramDetector initialized")
 
     def _is_diagram_rect(self, c):
         x, y, w, h = cv2.boundingRect(c)
@@ -104,7 +104,7 @@ class DiagramDetector:
         # Calculate percentage of rectangle area in image
         image_height, image_width = image_area(self.image)
         area_rects_percentage = round(area_rects / (image_width * image_height) * 100, 4)
-        print("Found rects: {amount}, area: {area} ({perc}%)".format(amount=len(self.shapes), area=area_rects, perc=area_rects_percentage))
+        util.log(f"Found rects: {len(self.shapes)}, area: {area_rects} ({area_rects_percentage}%)")
 
         return self.image
 
@@ -201,7 +201,7 @@ class DiagramDetector:
         # Calculate percentage of rectangle area in image
         image_height, image_width = image_area(self.image)
         area_rects_percentage = round(area_rects / (image_width * image_height) * 100, 4)
-        print("Found rects: {amount}, area: {area} ({perc}%)".format(amount=len(found_diagram_rects), area=area_rects, perc=area_rects_percentage))
+        log(f"Found rects: {len(found_diagram_rects)}, area: {area_rects} ({area_rects_percentage}%)")
 
     def show_result(self):
         """
