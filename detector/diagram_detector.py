@@ -5,11 +5,14 @@ from detector.util import *
 import numpy as np
 from detector.shape_type import ShapeType
 from detector.diagram.shape import Shape
+import detector.util as util
+from detector.diagram.class_diagram_detector import ClassDiagramDetector
 
 class DiagramDetector:
     def __init__(self):
         self.orig_image = None
         self.image = None
+        self.preprocessed_gray = None
         self.shapes = []
         print("DiagramDetector initialized")
 
@@ -19,7 +22,6 @@ class DiagramDetector:
         area = w * h
 
         return detect_shape(c) == ShapeType.RECTANGLE #and h > w and area > 200 #and ratio < 1
-
 
     def _preprocess(self, image):
         # Blur image
@@ -56,12 +58,12 @@ class DiagramDetector:
         # Holds the area of all rects that were defined as class diagram rectangles
         area_rects = 0
         # img, contours, hierarchy = detect_contours(proc_image)
-        cnts = detect_contours(image)
-        cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-        cnts = contours.sort_contours(cnts, method="left-to-right")[0]
+        im, cnts, hierarchy = detect_contours(image)
+        cons = cnts[0] if imutils.is_cv2() else cnts[1]
+        cons = contours.sort_contours(cnts, method="left-to-right")[0]
 
         found_shapes = []
-        for (i, c) in enumerate(cnts):
+        for (i, c) in enumerate(cons):
             shape = Shape(c)
             x, y, w, h = cv2.boundingRect(c)
             shape.set_image(image[y:y+h, x:x+w])
@@ -69,19 +71,35 @@ class DiagramDetector:
 
         return found_shapes
 
+    def find_class_diagram_shape(self, image):
+        im, cnts, hierarchy = detect_contours(image)
+        contour_map = {}
+        for h in hierarchy[0]:
+            parent_id = h[3]
+
+            if parent_id in contour_map:
+                contour_map[parent_id].append(h)
+            else:
+                contour_arr = []
+                contour_arr.append(h)
+                contour_map[parent_id] = contour_arr
+
+        return contour_map
+
     def get_analyzed_image(self):
         area_rects = 0
         for (i, shape) in enumerate(self.shapes):
-            shape.print_info()
+            if shape.shape is not ShapeType.UNIDENTIFIED:
+                shape.print_info()
 
-            area_rects += shape.area()
+                area_rects += shape.area()
 
-            cv2.drawContours(self.image, [shape.contour], 0, (0, 255, 0), 2)
+                cv2.drawContours(self.image, [shape.contour], 0, (0, 255, 0), 2)
 
-            M = shape.moments()
-            cX = int((M["m10"] / M["m00"]))
-            cY = int((M["m01"] / M["m00"]))
-            cv2.putText(self.image, shape.shape_name(), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+                #M = shape.moments()
+                #cX = int((M["m10"] / M["m00"]))
+                #cY = int((M["m01"] / M["m00"]))
+                #cv2.putText(self.image, shape.shape_name(), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
 
         # Calculate percentage of rectangle area in image
         image_height, image_width = image_area(self.image)
@@ -93,7 +111,16 @@ class DiagramDetector:
     def analyze(self):
         # Preprocess the image
         proc_image = self._preprocess(self.image)
-        self.shapes = self.find_shapes(proc_image)
+        #self.shapes = self.find_shapes(proc_image)
+
+        cdd = ClassDiagramDetector()
+        cdd.detect(proc_image)
+        class_shape_contours = cdd.get_class_shape_contours(proc_image)
+        util.draw_contours_on_image(class_shape_contours, self.image)
+
+        #for x in self.find_class_diagram_shape(proc_image):
+        #    print(x)
+
         return self.shapes, self.get_analyzed_image()
 
     def is_class_diagram(self):
@@ -147,7 +174,7 @@ class DiagramDetector:
             cv2.putText(self.image, shape.shape_name(), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
                         0.5, (0, 0, 0), 1)
 
-            cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), -1)
+            #cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), -1)
 
             # if self._is_diagram_rect(c):
             #     print_contour_details(c)
@@ -180,7 +207,18 @@ class DiagramDetector:
         """
         Opens the image in a window.
         """
+        for (i, shape) in enumerate(self.shapes):
+            if shape.shape is not ShapeType.UNIDENTIFIED:
+                (x, y, w, h) = shape.bounding_rect()
+                cropped_image = util.crop_area(x, y, w, h, cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY))
+                filename = "output/cropped_{i}.png".format(i=i)
+                util.save_image(cropped_image, filename)
+                util.ocr(filename)
+
         cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)
+
+        #cv2.createTrackbar('Epsilon', 'Image', 0, 100, self.is_class_diagram)
+
         cv2.imshow("Image", self.image)
         cv2.waitKey()
         cv2.destroyAllWindows()

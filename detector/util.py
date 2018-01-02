@@ -134,3 +134,43 @@ def crop_area(x, y, w, h, image):
     :return: Array with the pixel data of the cropped area
     """
     return image[y:y+h, x:x+w]
+
+
+def create_shape_hierarchy(image):
+    """
+    Creates a dict, that resembles the hierarchy of the contours. As index there are all parent contours, children are
+    all children contours of the parent contours.
+    :param image: Image you want the contours from.
+    :return: dict that contains the contour hierarchy
+    """
+
+    _, cnts, hierachy = detect_contours(image)
+    #for c in zip(cnts, hierachy):
+
+    contour_map = {}
+    for h in hierachy[0]:
+        parent_id = h[3]
+        first_child_id = h[2]
+
+        # Store only contours with a parent
+        if parent_id > -1:
+            if parent_id in contour_map:
+                contour_map[parent_id].append(h)
+            else:
+                contour_arr = []
+                contour_arr.append(h)
+                contour_map[parent_id] = contour_arr
+
+    return contour_map, cnts
+
+
+def draw_contours_on_image(contours, image):
+    """
+    Draws the given contours onto the given image,
+    :param contours: Contours that are drawn.
+    :param image: The image the contours are being drawn onto.
+    :return:
+    """
+
+    print("Draw "+ str(len(contours)) +" contours")
+    cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
