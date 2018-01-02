@@ -23,7 +23,7 @@ class ClassDiagramDetector:
     def detect(self, image):
         self.shape_hierarchy, self.cnts = util.create_shape_hierarchy(image)
         for k, v in self.shape_hierarchy.items():
-            util.log("contour " + str(k) + " has " + str(len(v)) + " children")
+            util.log(f"contour {k} has {len(v)} children")
 
 
     def get_class_shape_contours(self, image):

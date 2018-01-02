@@ -1,12 +1,11 @@
 import cv2
-import os
 import detector.util as util
+import os
 from detector.shape_type import ShapeType
 
 
 class Shape:
     def __init__(self, contour):
-        self.type = None
         self.image = None
         self.contour = contour
         self.shape = util.detect_shape(contour)
@@ -23,8 +22,8 @@ class Shape:
         :param filename: Name of the saved file.
         :return:
         """
-        self.output_filename = "{}.png".format(filename)
-        cv2.imwrite(self.output_filename, self.image)
+        self.output_filename = f"{filename}.png"
+        util.save_image(self.image, self.output_filename)
 
     def remove_image(self):
         """

@@ -193,4 +193,4 @@ def log(str):
     :return:
     """
     t = time.strftime("%H:%M:%S")
-    print(f"{t}\t{str}")
+    print(f"[{t}] {str}")
