@@ -6,8 +6,11 @@ from detector.shape_type import ShapeType
 import pytesseract
 from PIL import Image
 
-# Defines the accuracy for contour detection
 EPSILON_FACTOR = 0.04
+""" Defines the accuracy for contour detection """
+
+OUTPUT_PATH = "output/"
+""" Defines the path images will be saved to """
 
 
 def aspect_ratio(c):
@@ -110,7 +113,7 @@ def save_image(image, filename):
     :param filename: Name of the saved file.
     :return:
     """
-    cv2.imwrite(filename, image)
+    cv2.imwrite(f"{OUTPUT_PATH}{filename}", image)
 
 
 def ocr(image):

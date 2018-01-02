@@ -57,6 +57,7 @@ class ShapeDetector:
             shape.set_image(self.image[y:y+h, x:x+w])
             found_shapes.append(shape)
 
+        self.shapes = found_shapes
         return found_shapes
 
     def save_found_shapes(self):
