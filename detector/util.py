@@ -141,7 +141,7 @@ def crop_shapes_and_save_as_files(image, shapes):
     for (i, shape) in enumerate(shapes):
         if shape.shape is not ShapeType.UNIDENTIFIED:
             (x, y, w, h) = shape.bounding_rect()
-            cropped_image = crop_area(x, y, w, h, cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
+            cropped_image = crop_area(x, y, w, h, image)
             filename = "output/cropped_{i}.png".format(i=i)
             save_image(cropped_image, filename)
 
