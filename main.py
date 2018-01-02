@@ -2,7 +2,7 @@ import cv2
 import imutils
 import numpy as np
 import argparse
-from detector.diagram_detector import DiagramDetector
+from detector.diagram_type_detector import DiagramTypeDetector
 from detector.shape_detector import ShapeDetector
 from detector.xml.ShapeWriter import ShapeWriter
 from detector.util import *
@@ -33,6 +33,14 @@ if __name__ == '__main__':
     shape_detector = ShapeDetector(img_path)
     shapes = shape_detector.find_shapes()
     log(f"{len(shapes)} shapes in image found")
+
+    #   Detect type of diagram
+    diagram_type_detector = DiagramTypeDetector(shapes)
+    diagram_type_detector.analyze_shapes()
+    diagram_converter = diagram_type_detector.get_converter()
+
+    #   Convert shapes into diagram
+    diagram_converter.transform_shapes_to_diagram()
 
 
     #dd = DiagramDetector()

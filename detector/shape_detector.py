@@ -6,7 +6,6 @@ import numpy as np
 from detector.shape_type import ShapeType
 from detector.diagram.shape import Shape
 import detector.util as util
-from detector.diagram.class_diagram_detector import ClassDiagramDetector
 
 
 class ShapeDetector:
