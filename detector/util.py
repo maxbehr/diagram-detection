@@ -1,4 +1,5 @@
 import cv2
+import imutils
 import os
 import time
 from detector.shape_type import ShapeType
@@ -185,6 +186,37 @@ def draw_contours_on_image(contours, image):
     log(f"Draw {len(contours)} contours")
     cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
 
+
+def create_working_copy_of_image(image):
+    """
+    Creates a resized copy of the given image.
+    :param image: Image the copy is created from.
+    :return: Returns the resized image
+    """
+    return imutils.resize(image, width=700)
+
+
+def preprocess_image(image):
+    """
+    Preprocesses the image in order to properly detect shapes. Applies gaussian blur, converts the color to b/w and
+    creates a binary image from it, that is returned.
+    :param image: Image that is gonna be preprocessed
+    :return: Binary image of the given image.
+    """
+
+    # Blur image
+    image = cv2.GaussianBlur(image, (5,5), 0)
+
+    # Grayscale image
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #cv2.imshow("gray", image)
+
+    # Threshold image
+    _, image = cv2.threshold(image, 135, 255, cv2.THRESH_BINARY_INV)
+    #image = cv2.dilate(image, (15, 15), iterations=3)
+    #cv2.imshow("thresh", image)
+
+    return image
 
 def log(str):
     """

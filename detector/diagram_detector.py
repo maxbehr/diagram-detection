@@ -8,6 +8,7 @@ from detector.diagram.shape import Shape
 import detector.util as util
 from detector.diagram.class_diagram_detector import ClassDiagramDetector
 
+
 class DiagramDetector:
     def __init__(self):
         self.orig_image = None
@@ -43,7 +44,7 @@ class DiagramDetector:
 
     def load(self, image_path):
         self.orig_image = cv2.imread(image_path)
-        self.image = self._get_working_copy(self.orig_image)
+        self.image = util.create_working_copy_of_image(self.orig_image)
 
     def get_shapes(self):
         return self.shapes

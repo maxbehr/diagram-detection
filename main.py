@@ -3,7 +3,9 @@ import imutils
 import numpy as np
 import argparse
 from detector.diagram_detector import DiagramDetector
+from detector.shape_detector import ShapeDetector
 from detector.xml.ShapeWriter import ShapeWriter
+from detector.util import *
 
 ap = argparse.ArgumentParser()
 output_file = "./output/found_shapes.xml"
@@ -27,12 +29,18 @@ if __name__ == '__main__':
     # args = vars(ap.parse_args())
     # print(args["image"])
 
-    dd = DiagramDetector()
-    dd.load(img_path)
-    shapes, analyzed_image = dd.analyze()
+    #   Detect all shapes
+    shape_detector = ShapeDetector(img_path)
+    shapes = shape_detector.find_shapes()
+    log(f"{len(shapes)} shapes in image found")
+
+
+    #dd = DiagramDetector()
+    #dd.load(img_path)
+    #shapes, analyzed_image = dd.analyze()
 
     #dd.is_class_diagram()
-    dd.show_result()
+    #dd.show_result()
 
     #writer = ShapeWriter(shapes, output_file)
     #writer.write(shapes)
