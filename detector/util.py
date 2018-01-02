@@ -137,6 +137,22 @@ def crop_area(x, y, w, h, image):
     return image[y:y+h, x:x+w]
 
 
+def crop_shapes_and_save_as_files(image, shapes):
+    """
+    Crops out all given shapes in the given image and saves them as separate image files.
+    :param image: The image we want to crop out the shapes.
+    :param shapes: The shapes we want to crop.
+    """
+    log(f"Crop {len(shapes)} shapes in image")
+
+    for (i, shape) in enumerate(shapes):
+        if shape.shape is not ShapeType.UNIDENTIFIED:
+            (x, y, w, h) = shape.bounding_rect()
+            cropped_image = crop_area(x, y, w, h, cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
+            filename = "output/cropped_{i}.png".format(i=i)
+            save_image(cropped_image, filename)
+
+
 def create_shape_hierarchy(image):
     """
     Creates a dict, that resembles the hierarchy of the contours. As index there are all parent contours, children are

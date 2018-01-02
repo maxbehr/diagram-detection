@@ -207,13 +207,7 @@ class DiagramDetector:
         """
         Opens the image in a window.
         """
-        for (i, shape) in enumerate(self.shapes):
-            if shape.shape is not ShapeType.UNIDENTIFIED:
-                (x, y, w, h) = shape.bounding_rect()
-                cropped_image = util.crop_area(x, y, w, h, cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY))
-                filename = "output/cropped_{i}.png".format(i=i)
-                util.save_image(cropped_image, filename)
-                util.ocr(filename)
+        util.crop_shapes_and_save_as_files(self.image, self.shapes)
 
         cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)
 
