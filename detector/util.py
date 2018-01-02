@@ -1,5 +1,6 @@
 import cv2
 import os
+import time
 from detector.shape_type import ShapeType
 import pytesseract
 from PIL import Image
@@ -174,3 +175,13 @@ def draw_contours_on_image(contours, image):
 
     print("Draw "+ str(len(contours)) +" contours")
     cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
+
+
+def log(str):
+    """
+    Logs the given string to the console.
+    :param str:
+    :return:
+    """
+    t = time.strftime("%H:%M:%S")
+    print(f"{t}\t{str}")
