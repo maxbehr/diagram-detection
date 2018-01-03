@@ -49,11 +49,23 @@ class ShapeDetector:
         area_rects = 0
         # img, contours, hierarchy = detect_contours(proc_image)
         im, cnts, hierarchy = detect_contours(self.preprocessed_image)
-        cons = cnts[0] if imutils.is_cv2() else cnts[1]
-        cons = contours.sort_contours(cnts, method="left-to-right")[0]
+
+        #cons = cnts[0] if imutils.is_cv2() else cnts[1]
+        # TODO: Why are we using cnts when creating the bounding rects instead of cons? No openCV version check needed?
+
+        # TODO: Currently, we aren't sorting the contours anymore, but rather we are creating bounding rects for all contours.
+
+        # Try creating bounding rect for all contours in order to then get all contours for which we could create
+        # a bounding rect
+        bounding_boxes = [cv2.boundingRect(c) for c in cnts]
+        cons = [cnts[i] for i, v in enumerate(bounding_boxes)]
+
+        #cons = contours.sort_contours(cnts, method="left-to-right")[0]
 
         found_shapes = []
         for (i, c) in enumerate(cons):
+            log(f"c has children: {len(util.get_contour_children_for(i, hierarchy))}")
+
             shape = Shape(c)
             x, y, w, h = cv2.boundingRect(c)
             shape.set_image(self.image[y:y+h, x:x+w])

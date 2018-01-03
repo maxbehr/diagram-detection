@@ -221,6 +221,34 @@ def preprocess_image(image):
 
     return image
 
+
+def has_contour_children(contour_index, hierarchy):
+    """
+    Checks if the given index appears as parent_index in the given hierarchy.
+
+    :param contour_index: Index of the contour we want to check, whether it has some children.
+    :param hierarchy: Hierarchy, we want to check the given contour_index
+    :return: True if given contour has children, False otherwise
+    """
+    all_parent_ids = [hierarchy[i][3] for i, v in enumerate(hierarchy)]
+    return contour_index in all_parent_ids[0]
+
+
+def get_contour_children_for(contour_index, hierarchy):
+    """
+    Returns all child contours of the given contour_index from the given hierarchy.
+    :param contour_index: Index of the contour we want to have all children returned.
+    :param hierarchy: Hierarchy we want to check against.
+    :return: List of all children
+    """
+    children = []
+    for h in hierarchy[0]:
+        if contour_index == h[3]:
+            children.append(h)
+
+    return children
+
+
 def log(str):
     """
     Logs the given string to the console.
