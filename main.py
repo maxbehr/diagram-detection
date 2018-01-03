@@ -35,9 +35,7 @@ if __name__ == '__main__':
     log(f"{len(shapes)} shapes in image found")
 
     #   Detect type of diagram
-    diagram_type_detector = DiagramTypeDetector(shapes)
-    diagram_type_detector.analyze_shapes()
-    diagram_converter = diagram_type_detector.get_converter()
+    diagram_converter = DiagramTypeDetector.find_converter(shapes)
 
     #   Convert shapes into diagram
     diagram_converter.transform_shapes_to_diagram()

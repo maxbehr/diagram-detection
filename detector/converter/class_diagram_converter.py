@@ -1,7 +1,5 @@
 from detector.util import *
-from detector.diagram.diagram_converter import DiagramConverter
-from detector.diagram.shape import Shape
-import detector.util as util
+from detector.converter.diagram_converter import DiagramConverter
 
 
 class ClassDiagramConverter(DiagramConverter):
@@ -10,3 +8,6 @@ class ClassDiagramConverter(DiagramConverter):
     def transform_shapes_to_diagram(self):
         log("transform to class diagram")
 
+    @classmethod
+    def is_diagram(cls, shapes):
+        return True
