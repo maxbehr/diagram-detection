@@ -1,10 +1,5 @@
-import cv2
-import imutils
-import numpy as np
 import argparse
-from detector.diagram_type_detector import DiagramTypeDetector
-from detector.shape_detector import ShapeDetector
-from detector.xml.ShapeWriter import ShapeWriter
+from detector.detector import *
 from detector.util import *
 
 ap = argparse.ArgumentParser()
