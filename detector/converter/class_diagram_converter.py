@@ -9,5 +9,5 @@ class ClassDiagramConverter(DiagramConverter):
         log("transform to class diagram")
 
     @classmethod
-    def is_diagram(cls, shapes):
+    def is_diagram(cls, shape_detector):
         return True

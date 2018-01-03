@@ -26,11 +26,11 @@ if __name__ == '__main__':
 
     #   Detect all shapes
     shape_detector = ShapeDetector(img_path)
-    shapes, contours, hierarchy = shape_detector.find_shapes()
+    shapes = shape_detector.find_shapes()
     log(f"{len(shapes)} shapes in image found")
 
     #   Detect type of diagram
-    diagram_converter = DiagramTypeDetector.find_converter(shapes, contours, hierarchy)
+    diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
 
     #   Convert shapes into diagram
     diagram_converter.transform_shapes_to_diagram()

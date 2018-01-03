@@ -22,6 +22,9 @@ class ShapeDetector:
         self.shapes = []
         """ Holds all found shapes. """
 
+        self.contours = None
+        self.hierarchy = None
+
         self._load(image)
 
         util.log("ShapeDetector initialized")
@@ -57,7 +60,10 @@ class ShapeDetector:
             found_shapes.append(shape)
 
         self.shapes = found_shapes
-        return found_shapes, cons, hierarchy
+        self.contours = cons
+        self.hierarchy = hierarchy
+
+        return found_shapes
 
     def save_found_shapes(self):
         for k, shape in enumerate(self.shapes):

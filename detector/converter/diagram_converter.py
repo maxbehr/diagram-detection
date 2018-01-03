@@ -11,10 +11,9 @@ import detector.util as util
 class DiagramConverter(object):
     CONVERTER_TYPE = None
 
-    def __init__(self, shapes, contours, hierarchy):
-        self.shapes = shapes
-        self.contours = contours
-        self.hierarchy = hierarchy
+    def __init__(self, shape_detector):
+        self.shape_detector = shape_detector
+        """ Shape detector, that contains all detected shapes, the contours and the contour hierarchy. """
 
     def transform_shapes_to_diagram(self):
         raise NotImplementedError()
