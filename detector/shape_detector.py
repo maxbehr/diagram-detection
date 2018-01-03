@@ -57,7 +57,7 @@ class ShapeDetector:
             found_shapes.append(shape)
 
         self.shapes = found_shapes
-        return found_shapes
+        return found_shapes, cons, hierarchy
 
     def save_found_shapes(self):
         for k, shape in enumerate(self.shapes):

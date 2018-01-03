@@ -11,8 +11,10 @@ import detector.util as util
 class DiagramConverter(object):
     CONVERTER_TYPE = None
 
-    def __init__(self, shapes):
+    def __init__(self, shapes, contours, hierarchy):
         self.shapes = shapes
+        self.contours = contours
+        self.hierarchy = hierarchy
 
     def transform_shapes_to_diagram(self):
         raise NotImplementedError()

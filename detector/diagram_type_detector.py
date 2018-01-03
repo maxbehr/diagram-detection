@@ -18,11 +18,11 @@ class DiagramTypeDetector:
     ]
 
     @classmethod
-    def find_converter(cls, shapes):
+    def find_converter(cls, shapes, contours, hierarchy):
         """
         Returns the converter that can be used for the shapes.
         :return:
         """
         for converter in cls.CONVERTERS:
             if converter.is_diagram(shapes):
-                return converter(shapes)
+                return converter(shapes, contours, hierarchy)
