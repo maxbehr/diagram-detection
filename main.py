@@ -1,6 +1,9 @@
 import argparse
+import cv2
 from detector.detector import *
-from detector.util import *
+from detector import util
+from detector.util import log
+import numpy as np
 
 ap = argparse.ArgumentParser()
 output_file = "./output/found_shapes.xml"
@@ -33,7 +36,28 @@ if __name__ == '__main__':
     diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
 
     #   Convert shapes into diagram
-    diagram_converter.transform_shapes_to_diagram()
+    entities = diagram_converter.extract_classes()
+
+    #contours = [c.class_contour for c in entities]
+    #contours = np.array(contours)
+    #util.draw_contours_on_image([contours], shape_detector.image)
+
+    for e in entities:
+        x, y, w, h = cv2.boundingRect(e.class_contour)
+        log(f"Bounding rect: x: {x}, y: {y}, w: {w}, h: {h}")
+        util.draw_contours_on_image([e.class_contour], shape_detector.image)
+
+
+    # Label contours
+    util.label_contours_in_image(shape_detector.contours, shape_detector.image)
+
+
+    # Open result in window
+    cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)
+    cv2.imshow("Image", shape_detector.image)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+
 
 
     #dd = DiagramDetector()
