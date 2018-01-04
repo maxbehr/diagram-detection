@@ -107,6 +107,17 @@ def detect_shape(c):
     return ShapeType.UNIDENTIFIED
 
 
+def label_contours_in_image(contours, image):
+    """
+    Labels the given contours in the given image. Puts their indices as text onto the image.
+    :param contours: Contours we want to label
+    :param image: Image we want the labels to be added to
+    """
+    for i, c in enumerate(contours):
+        (x, y, w, h) = cv2.boundingRect(c)
+        cv2.putText(image, str(i), (int(x+w/2), int(y+h/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+
+
 def save_image(image, filename):
     """
     Saves the given image to the disk.
