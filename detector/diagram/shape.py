@@ -8,6 +8,9 @@ class Shape:
     def __init__(self, contour):
         self.image = None
         self.contour = contour
+        self.contour_index = -1
+        """ Defines the contour index in the hierarchy list """
+
         self.shape = util.detect_shape(contour)
 
         (x, y, w, h) = cv2.boundingRect(self.contour)

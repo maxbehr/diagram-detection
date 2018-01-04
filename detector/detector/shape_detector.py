@@ -64,11 +64,10 @@ class ShapeDetector:
 
         found_shapes = []
         for (i, c) in enumerate(cons):
-            log(f"c has children: {len(util.get_contour_children_for(i, hierarchy))}")
-
             shape = Shape(c)
             x, y, w, h = cv2.boundingRect(c)
             shape.set_image(self.image[y:y+h, x:x+w])
+            shape.contour_index = i
             found_shapes.append(shape)
 
         self.shapes = found_shapes
