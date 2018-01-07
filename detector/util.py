@@ -189,7 +189,7 @@ def create_shape_hierarchy(image):
     return contour_map, cnts
 
 
-def draw_contours_on_image(contours, image):
+def draw_contours_on_image(contours, image, color=(0, 255, 0)):
     """
     Draws the given contours onto the given image,
     :param contours: Contours that are drawn.
@@ -198,7 +198,7 @@ def draw_contours_on_image(contours, image):
     """
 
     log(f"Draw {len(contours)} contours")
-    cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
+    cv2.drawContours(image, contours, -1, color, 2)
 
 
 def create_working_copy_of_image(image):

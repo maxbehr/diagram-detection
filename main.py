@@ -38,15 +38,22 @@ if __name__ == '__main__':
     #   Convert shapes into diagram
     entities = diagram_converter.extract_classes()
 
-    #contours = [c.class_contour for c in entities]
+    #contours = [c.get("name_contour") for c in entities]
     #contours = np.array(contours)
-    #util.draw_contours_on_image([contours], shape_detector.image)
+    #util.draw_contours_on_image(contours, shape_detector.image)
 
     for e in entities:
-        x, y, w, h = cv2.boundingRect(e.class_contour)
-        log(f"Bounding rect: x: {x}, y: {y}, w: {w}, h: {h}")
-        util.draw_contours_on_image([e.class_contour], shape_detector.image)
+        # Draw name contour
+        name_contour = e.get("name_contour")
+        util.draw_contours_on_image([name_contour], shape_detector.image, color=(255,0,0))
 
+        # Draw attribute contour
+        attribute_contour = e.get("attribute_contour")
+        util.draw_contours_on_image([attribute_contour], shape_detector.image, color=(0,0,255))
+
+        # Draw method contour
+        method_contour = e.get("method_contour")
+        util.draw_contours_on_image([method_contour], shape_detector.image)
 
     # Label contours
     util.label_contours_in_image(shape_detector.contours, shape_detector.image)
