@@ -40,7 +40,9 @@ class ClassDiagramConverter(DiagramConverter):
         contour_children = util.get_contour_children_for(shape.contour_index, self.shape_detector.hierarchy)
         sorted_contours = util.get_sorted_contours_for_hierachy_entries(self.shape_detector.contours, contour_children)
 
-        new_class.class_contour = sorted_contours[0]
+        new_class.set("name_contour", sorted_contours[0])
+        new_class.set("attribute_contour", sorted_contours[1])
+        new_class.set("method_contour", sorted_contours[2])
 
         return new_class
 
