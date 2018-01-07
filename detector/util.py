@@ -52,7 +52,7 @@ def print_contour_details(c):
     shape_type = detect_shape(c)
     shape = ShapeType.to_s(shape_type=shape_type)
 
-    log(f"shape: {shape}, sides: {sides}, ratio: {aspect_ratio(c)}, w: {w}, h: {h}, area: {area_contour(c)}")
+    log(f"Contour - shape: {shape}, sides: {sides}, ratio: {aspect_ratio(c)}, x: {x}, y: {y}, w: {w}, h: {h}, area: {area_contour(c)}")
 
 
 def print_image_details(image):
