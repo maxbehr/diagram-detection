@@ -39,6 +39,15 @@ class ShapeDetector:
         return self.shapes
 
     def find_shapes(self):
+        found_shapes, cons, hierarchy = self.find_shapes_in_image(self.preprocessed_image)
+
+        self.shapes = found_shapes
+        self.contours = cons
+        self.hierarchy = hierarchy
+
+        return found_shapes
+
+    def find_shapes_in_image(self, image):
         """
         Looks for contours in the given image which are then transformed into Shapes. All found Shapes are then
         returned as an array.
@@ -48,7 +57,7 @@ class ShapeDetector:
         # Holds the area of all rects that were defined as class diagram rectangles
         area_rects = 0
         # img, contours, hierarchy = detect_contours(proc_image)
-        im, cnts, hierarchy = detect_contours(self.preprocessed_image)
+        im, cnts, hierarchy = detect_contours(image)
 
         #cons = cnts[0] if imutils.is_cv2() else cnts[1]
         # TODO: Why are we using cnts when creating the bounding rects instead of cons? No openCV version check needed?
@@ -70,15 +79,53 @@ class ShapeDetector:
             shape.contour_index = i
             found_shapes.append(shape)
 
-        self.shapes = found_shapes
-        self.contours = cons
-        self.hierarchy = hierarchy
-
-        return found_shapes
+        return found_shapes, cons, hierarchy
 
     def save_found_shapes(self):
         for k, shape in enumerate(self.shapes):
             shape.save_image(f"shape_{k}.png")
+
+    def get_image_remove_contours(self, contours_to_be_removed):
+        """
+        Returns the pre-processed image with the given contours removed.
+        :param contours_to_be_removed: The contours that should not be included in the image that is returned.
+        :return: Image without the shapes of the given contours removed.
+        """
+        image = self.preprocessed_image.copy()
+
+        erosion_factor = 5
+        for c in contours_to_be_removed:
+            (x, y, w, h) = cv2.boundingRect(c)
+            util.print_contour_details(c)
+
+            cv2.rectangle(image, (x-erosion_factor, y-erosion_factor), (x+w+erosion_factor, y+h+erosion_factor), (0, 0, 0), -1)
+
+        return image
+
+    def get_shapes_by_type(self, shape_type):
+        """
+        Filters the found shapes by the given shape type.
+        :param shape_type: Shape type the found shapes are filtered by.
+        :return: An array that contains the filtered shapes.
+        """
+        shapes = [s for s in self.shapes if s.shape == shape_type]
+        shapes_contours = [s.contour for s in shapes]
+
+        return shapes, shapes_contours
+
+    def get_image_remove_shape_type(self, shape_type):
+        """
+
+        :param shape_type:
+        :return:
+        """
+        shapes, shapes_contours = self.get_shapes_by_type(shape_type)
+        return self.get_image_remove_contours(shapes_contours)
+
+    def get_image_filter_shape_type(self, shape_type):
+        img = self.get_image_remove_shape_type(shape_type)
+        _, contours_remove, _ = self.find_shapes_in_image(img)
+        return self.get_image_remove_contours(contours_remove)
 
     def show_result(self):
         """
