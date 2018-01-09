@@ -46,3 +46,6 @@ class ClassDiagramConverter(DiagramConverter):
 
         return new_class
 
+    def get_attributes(self):
+        attributes = util.get_contour_children_for(self.shape.contour_index, self.shape_detector.hierarchy)
+        return attributes
