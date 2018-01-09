@@ -74,7 +74,7 @@ def detect_contours(image):
     """
     #   cv2.RETR_TREE --> Relationships between contours
     #   cv2.RETR_EXTERNAL --> Ohne doppelte Konturen
-    return cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    return cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
 
 def detect_shape(c):
