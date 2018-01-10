@@ -115,14 +115,20 @@ class ShapeDetector:
 
     def get_image_remove_shape_type(self, shape_type):
         """
-
+        Removes the given shape type from the image.
         :param shape_type:
-        :return:
+        :return: image that has the given shape type removed
         """
         shapes, shapes_contours = self.get_shapes_by_type(shape_type)
         return self.get_image_remove_contours(shapes_contours)
 
     def get_image_filter_shape_type(self, shape_type):
+        """
+        Isolates the given shape type from the image and returns an image that only contains shapes from the given
+        shape type.
+        :param shape_type:
+        :return: image that contains only shape types of the given shape type
+        """
         img = self.get_image_remove_shape_type(shape_type)
         _, contours_remove, _ = self.find_shapes_in_image(img)
         return self.get_image_remove_contours(contours_remove)
