@@ -25,7 +25,7 @@ class Shape:
         :param filename: Name of the saved file.
         :return:
         """
-        output_filename = f"{filename}"
+        output_filename = f"{self.shape_name()}_{filename}"
         util.save_image(self.image, output_filename)
 
     def remove_image(self):
