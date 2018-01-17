@@ -137,6 +137,15 @@ if __name__ == '__main__':
             log("Erode")
             image = util.erode(image)
 
+        # C - Find Classes
+        if ch == 49:
+            shape_detector = ShapeDetector(img_path)
+            shapes = shape_detector.find_shapes()
+            diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
+            entities = diagram_converter.extract_classes()
+            image = util.draw_class_entities_on_img(entities, image)
+            log(f"{len(shapes)} shapes in image found")
+
         # B - Binary
         if ch == 98:
             image = util.create_binary_img(image)
