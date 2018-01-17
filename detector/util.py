@@ -5,6 +5,7 @@ import time
 from detector.shape_type import ShapeType
 import pytesseract
 from PIL import Image
+import numpy as np
 
 EPSILON_FACTOR = 0.04
 """ Defines the accuracy for contour detection """
@@ -233,6 +234,17 @@ def preprocess_image(image):
     return image
 
 
+def create_binary_img(img):
+    """
+    Converts the given image into a binary image.
+    :param img: Image you want to convert
+    :return: Binary image of the given image
+    """
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    _, image = cv2.threshold(img, 135, 255, cv2.THRESH_BINARY_INV)
+    return image
+
+
 def has_contour_children(contour_index, hierarchy):
     """
     Checks if the given index appears as parent_index in the given hierarchy.
@@ -305,6 +317,49 @@ def draw_class_entities_on_img(class_entities, img):
         method_contour = e.get("method_contour")
         print_contour_details(method_contour)
         draw_contours_on_image([method_contour], img)
+
+
+def create_canny_edge_image(image, min=100, max=200):
+    """
+    Applies the canny edge detection to the given image.
+    :param image: The image you want the edges of
+    :param min:  
+    :param max:
+    :return: the canny edge image
+    """
+    return cv2.Canny(image, min, max)
+
+
+def erode(image, kernel=np.ones((5,5), np.uint8), iterations=1):
+    """
+    Erodes (removes pixel) to the given image.
+    :param image: The image you want to erode
+    :param kernel: The kernel size, default: 5x5
+    :param iterations: The amount how many time the image will be eroded
+    :return: The eroded image
+    """
+
+    return cv2.erode(image, kernel, iterations)
+
+
+def dilate(image, kernel=np.ones((5,5), np.uint8), iterations=1):
+    """
+    Dilates (adds pixel) to the given image.
+    :param image: The image you want to dilate
+    :param kernel: The kernel size, default: 5x5
+    :param iterations: The amount how many time the image will be dilated
+    :return: The dilated image
+    """
+    return cv2.dilate(image, kernel, iterations)
+
+
+def create_inverted_image(image):
+    """
+    Creates an inverted image of the given one.
+    :param image: The image you want to invert
+    :return: the inverted image
+    """
+    return cv2.bitwise_not(image)
 
 
 def log(str):
