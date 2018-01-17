@@ -9,15 +9,11 @@ import numpy as np
 ap = argparse.ArgumentParser()
 output_file = "./output/found_shapes.xml"
 
-
-#def nothing(arg):
-#    print(arg)
-#    pass
-
 if __name__ == '__main__':
 
     #img_path = "img/class_pencil.jpeg"
-    img_path = "img/class.jpeg"
+    #img_path = "img/class.jpeg"
+    #img_path = "img/class_many.jpeg"
     img_path = "img/class2.jpeg"
     #img_path = "img/usecase.jpeg"
     #img_path = "img/circles.jpeg"
@@ -42,12 +38,8 @@ if __name__ == '__main__':
     contours = [c.get("name_contour") for c in entities] +\
                [c.get("attribute_contour") for c in entities] +\
                [c.get("method_contour") for c in entities]
-    #contours = np.array(contours)
-    #util.draw_contours_on_image(contours, shape_detector.image)
 
-    img = shape_detector.get_image_filter_shape_type(ShapeType.RECTANGLE)
-
-    # cv2.imwrite('houghlines3.jpg', self.image)
+    #img = shape_detector.get_image_remove_shape_type(ShapeType.RECTANGLE)
 
     # Draw class contours
     util.draw_class_entities_on_img(entities, shape_detector.image)
@@ -55,34 +47,8 @@ if __name__ == '__main__':
     # Label contours
     util.label_contours_in_image(shape_detector.contours, shape_detector.image)
 
-
     # Open result in window
     cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)
-    #cv2.imshow("Image", shape_detector.image)
-    cv2.imshow("Image", img)
+    cv2.imshow("Image", shape_detector.image)
     cv2.waitKey()
     cv2.destroyAllWindows()
-
-
-
-    #dd = DiagramDetector()
-    #dd.load(img_path)
-    #shapes, analyzed_image = dd.analyze()
-
-    #dd.is_class_diagram()
-    #dd.show_result()
-
-    #writer = ShapeWriter(shapes, output_file)
-    #writer.write(shapes)
-
-    # while True:
-    #     cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)
-    #     #cv2.createTrackbar('Epsilon', 'Image', 1, 100, nothing)
-    #
-    #     cv2.imshow("Image", analyzed_image)
-    #     ch = cv2.waitKey(5)
-    #     if ch == 27:
-    #         break;
-    #
-    # cv2.destroyAllWindows()
-
