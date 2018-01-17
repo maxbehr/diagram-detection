@@ -30,7 +30,7 @@ class ShapeDetector:
         util.log("ShapeDetector initialized")
 
     def _load(self, image_path):
-        log("ShapeDetector: load image '{image_path}' and create working copy")
+        log(f"ShapeDetector: load image '{image_path}' and create working copy")
         self.orig_image = cv2.imread(image_path)
         self.image = util.create_working_copy_of_image(self.orig_image)
         self.preprocessed_image = util.preprocess_image(self.image)
@@ -80,6 +80,33 @@ class ShapeDetector:
             found_shapes.append(shape)
 
         return found_shapes, cons, hierarchy
+
+    def draw_class_entities_on_img(self, entities):
+        self.image = util.draw_class_entities_on_img(entities, self.image)
+
+    def label_contours(self):
+        self.image = util.label_contours_in_image(self.contours, self.image)
+
+    def find_lines_in_image_houghp(self, image, rho=1, theta=np.pi / 180, threshold=20):
+        img = image.copy()
+        edges = cv2.Canny(img, 50, 150, apertureSize=3)
+
+        minLineLength = None
+        maxLineGap = None
+        lines = cv2.HoughLinesP(edges, rho, theta, threshold)
+
+        return lines
+
+    def find_lines_in_image_hough(self, image, rho=1, theta=np.pi / 180, threshold=20):
+        img = image.copy()
+        edges = cv2.Canny(img, 50, 150, apertureSize=3)
+
+        minLineLength = None
+        maxLineGap = None
+        lines = cv2.HoughLines(edges, rho, theta, threshold)
+
+        return lines
+
 
     def save_found_shapes(self):
         for k, shape in enumerate(self.shapes):

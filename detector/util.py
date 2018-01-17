@@ -114,9 +114,11 @@ def label_contours_in_image(contours, image):
     :param contours: Contours we want to label
     :param image: Image we want the labels to be added to
     """
+    image = image.copy()
     for i, c in enumerate(contours):
         (x, y, w, h) = cv2.boundingRect(c)
         cv2.putText(image, str(i), (int(x+w/2), int(y+h/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+    return image
 
 
 def save_image(image, filename):
@@ -302,6 +304,7 @@ def draw_class_entities_on_img(class_entities, img):
     :param img: The image the contours will be drawn on.
     :return:
     """
+    img = img.copy()
     for e in class_entities:
         # Draw name contour
         name_contour = e.get("name_contour")
@@ -317,6 +320,8 @@ def draw_class_entities_on_img(class_entities, img):
         method_contour = e.get("method_contour")
         print_contour_details(method_contour)
         draw_contours_on_image([method_contour], img)
+
+    return img
 
 
 def create_canny_edge_image(image, min=100, max=200):

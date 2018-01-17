@@ -42,10 +42,10 @@ if __name__ == '__main__':
     #img = shape_detector.get_image_remove_shape_type(ShapeType.RECTANGLE)
 
     # Draw class contours
-    util.draw_class_entities_on_img(entities, shape_detector.image)
+    shape_detector.draw_class_entities_on_img(entities)
 
     # Label contours
-    util.label_contours_in_image(shape_detector.contours, shape_detector.image)
+    shape_detector.label_contours()
 
     # Open result in window
     cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)
