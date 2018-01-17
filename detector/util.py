@@ -282,6 +282,31 @@ def get_sorted_contours_for_hierachy_entries(contours, hierarchy_entries, sort_m
     return mixed
 
 
+def draw_class_entities_on_img(class_entities, img):
+    """
+    Draws the contours of the given generic entitites - in this case UML classes. Colours the different parts, such as
+    name, attributes and methods differently. The contours will be drawn on the given image.
+    :param class_entities: Class entities we want to draw contours of.
+    :param img: The image the contours will be drawn on.
+    :return:
+    """
+    for e in class_entities:
+        # Draw name contour
+        name_contour = e.get("name_contour")
+        print_contour_details(name_contour)
+        draw_contours_on_image([name_contour], img, color=(255, 0, 0))
+
+        # Draw attribute contour
+        attribute_contour = e.get("attribute_contour")
+        print_contour_details(attribute_contour)
+        draw_contours_on_image([attribute_contour], img, color=(0, 0, 255))
+
+        # Draw method contour
+        method_contour = e.get("method_contour")
+        print_contour_details(method_contour)
+        draw_contours_on_image([method_contour], img)
+
+
 def log(str):
     """
     Logs the given string to the console.

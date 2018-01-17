@@ -47,21 +47,10 @@ if __name__ == '__main__':
 
     img = shape_detector.get_image_filter_shape_type(ShapeType.RECTANGLE)
 
-    # for e in entities:
-    #     # Draw name contour
-    #     name_contour = e.get("name_contour")
-    #     util.print_contour_details(name_contour)
-    #     util.draw_contours_on_image([name_contour], shape_detector.image, color=(255, 0, 0))
-    #
-    #     # Draw attribute contour
-    #     attribute_contour = e.get("attribute_contour")
-    #     util.print_contour_details(attribute_contour)
-    #     util.draw_contours_on_image([attribute_contour], shape_detector.image, color=(0, 0, 255))
-    #
-    #     # Draw method contour
-    #     method_contour = e.get("method_contour")
-    #     util.print_contour_details(method_contour)
-    #     util.draw_contours_on_image([method_contour], shape_detector.image)
+    # cv2.imwrite('houghlines3.jpg', self.image)
+
+    # Draw class contours
+    util.draw_class_entities_on_img(entities, shape_detector.image)
 
     # Label contours
     util.label_contours_in_image(shape_detector.contours, shape_detector.image)
