@@ -11,6 +11,7 @@ output_file = "./output/found_shapes.xml"
 
 if __name__ == '__main__':
 
+    #img_path = "img/class_diagram_notation.jpeg"
     #img_path = "img/class_pencil.jpeg"
     #img_path = "img/class.jpeg"
     #img_path = "img/class_many.jpeg"

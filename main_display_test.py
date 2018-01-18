@@ -22,14 +22,17 @@ def nothing(arg):
     threshold = cv2.getTrackbarPos(tbThreshold, hough_winname) + 1
     theta = (np.pi / 180) * (theta)
 
+    minLineLength = cv2.getTrackbarPos(tbMinLineLength, hough_winname) + 1
+    maxLineGap = cv2.getTrackbarPos(tbMaxLineGap, hough_winname) + 1
+
     original_copy_hough = image.copy()
     original_copy_houghp = image.copy()
 
-    hough_lines = find_hough_lines(original_copy_houghp, rho, theta, threshold)
-    draw_hough_lines(hough_lines, original_copy_houghp)
+    hough_lines = find_hough_lines(original_copy_hough, rho, theta, threshold)
+    draw_hough_lines(hough_lines, original_copy_hough)
 
-    houghp_lines = find_houghp_lines(original_copy_hough, rho, theta, threshold)
-    draw_houghp_lines(houghp_lines, original_copy_hough)
+    houghp_lines = find_houghp_lines(original_copy_houghp, rho, theta, threshold, minLineLength, maxLineGap)
+    draw_houghp_lines(houghp_lines, original_copy_houghp)
 
     cv2.imshow(hough_winname, original_copy_hough)
     cv2.imshow(houghp_winname, original_copy_houghp)
@@ -37,9 +40,9 @@ def nothing(arg):
     pass
 
 
-def find_houghp_lines(image, rho, theta, threshold):
+def find_houghp_lines(image, rho, theta, threshold, minLineLength, maxLineGap):
     #img = util.create_canny_edge_image(image)
-    houghp_lines = shape_detector.find_lines_in_image_houghp(image, rho, theta, threshold)
+    houghp_lines = shape_detector.find_lines_in_image_houghp(image, rho, theta, threshold, minLineLength, maxLineGap)
     log(f"Found {len(houghp_lines)} Hough lines")
 
     return houghp_lines
@@ -80,7 +83,7 @@ if __name__ == '__main__':
     cv2.moveWindow(hough_winname, 800, 0)
 
     cv2.namedWindow(houghp_winname)
-    cv2.moveWindow(houghp_winname, 800, 400)
+    cv2.moveWindow(houghp_winname, 0, 500)
 
     cv2.namedWindow(winname)
     cv2.moveWindow(winname, 0, 0)
@@ -97,8 +100,17 @@ if __name__ == '__main__':
     tbThreshold = "Threshold"
     cv2.createTrackbar(tbThreshold, hough_winname, 1, 100, nothing)
 
+    # MinLineLength
+    tbMinLineLength = "MinLineLength"
+    cv2.createTrackbar(tbMinLineLength, hough_winname, 1, 100, nothing)
+
+    # MaxLineGap
+    tbMaxLineGap = "MaxLineGap"
+    cv2.createTrackbar(tbMaxLineGap, hough_winname, 1, 100, nothing)
+
+    img_path = "img/class_diagram_notation.jpeg"
     #img_path = "img/class_pencil.jpeg"
-    img_path = "img/class.jpeg"
+    #img_path = "img/class.jpeg"
     #img_path = "img/class2.jpeg"
     #img_path = "img/usecase.jpeg"
     #img_path = "img/circles.jpeg"
@@ -125,7 +137,7 @@ if __name__ == '__main__':
 
         # C - Canny Edge
         if ch == 99:
-            image = util.create_canny_edge_image(image)
+            image = util.create_canny_edge_image(image, min=50, max=150)
 
         # D - Dilate
         if ch == 100:
