@@ -87,13 +87,10 @@ class ShapeDetector:
     def label_contours(self):
         self.image = util.label_contours_in_image(self.contours, self.image)
 
-    def find_lines_in_image_houghp(self, image, rho=1, theta=np.pi / 180, threshold=20):
+    def find_lines_in_image_houghp(self, image, rho=1, theta=np.pi / 180, threshold=20, minLineLength=None, maxLineGap=None):
         img = image.copy()
-        edges = cv2.Canny(img, 50, 150, apertureSize=3)
-
-        minLineLength = None
-        maxLineGap = None
-        lines = cv2.HoughLinesP(edges, rho, theta, threshold)
+        edges = cv2.Canny(img, 50, 200, apertureSize=3)
+        lines = cv2.HoughLinesP(edges, rho, theta, threshold, minLineLength=minLineLength, maxLineGap=maxLineGap)
 
         return lines
 
@@ -107,6 +104,8 @@ class ShapeDetector:
 
         return lines
 
+    def get_canny_edge_image(self, min=100, max=200):
+        return util.create_canny_edge_image(self.image, min, max)
 
     def save_found_shapes(self):
         for k, shape in enumerate(self.shapes):
