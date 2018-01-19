@@ -6,6 +6,7 @@ from detector.shape_type import ShapeType
 import pytesseract
 from PIL import Image
 import numpy as np
+import math
 
 EPSILON_FACTOR = 0.04
 """ Defines the accuracy for contour detection """
@@ -204,6 +205,30 @@ def draw_contours_on_image(contours, image, color=(0, 255, 0)):
     cv2.drawContours(image, contours, -1, color, 2)
 
 
+def draw_labeled_lines(image, lines, color=(0, 0, 255), toggle_line_drawing=True, toggle_label_drawing=True):
+    """
+    Draws the given lines onto the given image. Labels them as well.
+    :param image: Image you want the lines to be drawn on
+    :param lines: Lines that will be drawn
+    :param color: The color the drawn lines and labels will have
+    :param toggle_line_drawing: Defines if the lines will be drawn (true => draw lines, false => draw no lines)
+    :param toggle_label_drawing: Defines if the labels will be drawn (true => draw labels, false => draw no labels)
+    :return:
+    """
+    for i,l in enumerate(lines):
+        start = l.start_xy()
+        end = l.end_xy()
+
+        if toggle_line_drawing:
+            print(f"Draw line: {l}")
+            cv2.line(image, start, end, color, 2)
+
+        if toggle_label_drawing:
+            x = int(start[0])
+            y = int(start[1])
+            cv2.putText(image, str(i), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1, cv2.LINE_AA)
+
+
 def create_working_copy_of_image(image):
     """
     Creates a resized copy of the given image.
@@ -365,6 +390,21 @@ def create_inverted_image(image):
     :return: the inverted image
     """
     return cv2.bitwise_not(image)
+
+
+def distance_between(a, b):
+    """
+    Calculates the distance between the given points.
+    :param a: Point A
+    :param b: Point B
+    :return: The distance between Point A and Point B
+    """
+    x1, y1 = a.get_xy_tuple()
+    x2, y2 = b.get_xy_tuple()
+
+    s1 = math.pow(x2 - x1, 2)
+    s2 = math.pow(y2 - y1, 2)
+    return math.sqrt(s1 + s2)
 
 
 def log(str):
