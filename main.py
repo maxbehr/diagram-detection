@@ -34,7 +34,7 @@ if __name__ == '__main__':
     diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
 
     #   Convert shapes into diagram
-    entities = diagram_converter.extract_classes()
+    entities = diagram_converter._extract_classes()
 
     contours = [c.get("name_contour") for c in entities] +\
                [c.get("attribute_contour") for c in entities] +\
