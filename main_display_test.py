@@ -108,10 +108,11 @@ if __name__ == '__main__':
     tbMaxLineGap = "MaxLineGap"
     cv2.createTrackbar(tbMaxLineGap, hough_winname, 1, 100, nothing)
 
-    img_path = "img/class_diagram_notation.jpeg"
+    #img_path = "img/class_diagram_notation.jpeg"
     #img_path = "img/class_pencil.jpeg"
     #img_path = "img/class.jpeg"
     #img_path = "img/class2.jpeg"
+    img_path = "img/class_many.jpeg"
     #img_path = "img/usecase.jpeg"
     #img_path = "img/circles.jpeg"
     #img_path = "img/ocr_test.jpeg"
@@ -151,12 +152,17 @@ if __name__ == '__main__':
 
         # C - Find Classes
         if ch == 49:
-            shape_detector = ShapeDetector(img_path)
+            shape_detector.load(image)
             shapes = shape_detector.find_shapes()
             diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
-            entities = diagram_converter.extract_classes()
-            image = util.draw_class_entities_on_img(entities, image)
-            log(f"{len(shapes)} shapes in image found")
+            #entities = diagram_converter.extract_classes()
+            #image = util.draw_class_entities_on_img(entities, image)
+            #log(f"{len(shapes)} shapes in image found")
+
+            contours = [s.contour for s in shape_detector.shapes]
+            image = util.draw_labeled_contours(contours, shape_detector.hierarchy, image)
+
+            log(shape_detector.hierarchy)
 
         # B - Binary
         if ch == 98:
@@ -168,6 +174,7 @@ if __name__ == '__main__':
 
         # R - Reset
         if ch == 114:
+            shape_detector = ShapeDetector(img_path)
             image = shape_detector.image
             original = image.copy()
 
