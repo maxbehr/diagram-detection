@@ -17,6 +17,7 @@ class ClassDiagramConverter(DiagramConverter):
     def transform_shapes_to_diagram(self):
         log("transform to class diagram")
         self._extract_classes()
+        self._extract_associations()
 
     def _extract_classes(self):
         log(f"Extract classes from {len(self.shape_detector.shapes)} shapes")
@@ -35,13 +36,17 @@ class ClassDiagramConverter(DiagramConverter):
                     new_class.add_shape(Shape(group_value[1]))
                     new_class.add_shape(Shape(group_value[2]))
 
-                    new_class.set("name_contour", group_value[0])
-                    new_class.set("attribute_contour", group_value[1])
-                    new_class.set("method_contour", group_value[2])
+                    # new_class.set("name_contour", group_value[0])
+                    # new_class.set("attribute_contour", group_value[1])
+                    # new_class.set("method_contour", group_value[2])
 
                     self.generic_entities.append(new_class)
 
         return self.generic_entities
+
+    def _extract_associations(self):
+        log(f"Extract associations from {len(self.shape_detector.shapes)} shapes")
+        
 
     @classmethod
     def is_diagram(cls, shape_detector):

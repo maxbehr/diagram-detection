@@ -34,17 +34,18 @@ if __name__ == '__main__':
     diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
 
     #   Convert shapes into diagram
-    entities = diagram_converter._extract_classes()
+    class_entities = diagram_converter._extract_classes()
+    assoc_entities = diagram_converter._extract_associations()
 
-    contours = [c.get("name_contour") for c in entities] +\
-               [c.get("attribute_contour") for c in entities] +\
-               [c.get("method_contour") for c in entities]
+    # contours = [c.get("name_contour") for c in entities] +\
+    #            [c.get("attribute_contour") for c in entities] +\
+    #            [c.get("method_contour") for c in entities]
 
     #img = shape_detector.get_image_remove_shape_type(ShapeType.RECTANGLE)
 
     # Draw class contours
     #shape_detector.image = util.remove_generic_entities_in_image(shape_detector.image, entities)
-    shape_detector.image = diagram_converter.draw_class_entities_on_img(entities)
+    shape_detector.image = diagram_converter.draw_class_entities_on_img(class_entities)
 
     # Label contours
     shape_detector.label_contours()
