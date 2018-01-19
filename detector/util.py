@@ -365,6 +365,32 @@ def get_sorted_contours_by_parent(contours, hierarchy, discard_contours_without_
     return sorted_contours
 
 
+def group_contours_by_x_pos(contours):
+    """
+    Keys will be the first x value that was found for a group. Values of each key will be the contours that are within
+    the tolerance of the x value (respectively the key).
+    :param contours:
+    :return:
+    """
+    tolerance = 35
+    group = {}
+    for c in contours:
+        x, y, w, h = cv2.boundingRect(c)
+
+        was_added = False
+        for key in group.keys():
+            if (int(key) - tolerance) < x < (int(key) + tolerance):
+                group[key].append(c)
+                was_added = True
+
+        if not was_added:
+            if x not in group:
+                group[x] = []
+            group[x].append(c)
+
+    return group
+
+
 def draw_class_entities_on_img(class_entities, img):
     """
     Draws the contours of the given generic entitites - in this case UML classes. Colours the different parts, such as
