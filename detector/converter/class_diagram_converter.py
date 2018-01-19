@@ -19,13 +19,25 @@ class ClassDiagramConverter(DiagramConverter):
 
     def extract_classes(self):
         log(f"Extract classes from {len(self.shape_detector.shapes)} shapes")
-        for shape in self.shape_detector.shapes:
-            amount_children = len(util.get_contour_children_for(shape.contour_index, self.shape_detector.hierarchy))
+        log(self.shape_detector.hierarchy)
 
-            if shape.shape == ShapeType.RECTANGLE and amount_children == 3:
-                log("Class entity found")
-                new_class = self.create_class_entity(shape)
-                self.generic_entities.append(new_class)
+        sorted_contours = self.shape_detector.sort_contours_by_parent()
+        for k, v in sorted_contours.items():
+            contour_groups = util.group_contours_by_x_pos(v)
+
+            for group_key, group_value in contour_groups.items():
+                log(f"group_key {group_key} has {len(group_value)} items")
+
+                # Create class entities
+                if len(group_value) == 3:
+                    new_class = GenericEntity(None)
+                    new_class.type = ClassDiagramTypes.CLASS_ENTITY
+
+                    new_class.set("name_contour", group_value[0])
+                    new_class.set("attribute_contour", group_value[1])
+                    new_class.set("method_contour", group_value[2])
+
+                    self.generic_entities.append(new_class)
 
         return self.generic_entities
 
