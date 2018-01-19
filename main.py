@@ -43,7 +43,8 @@ if __name__ == '__main__':
     #img = shape_detector.get_image_remove_shape_type(ShapeType.RECTANGLE)
 
     # Draw class contours
-    shape_detector.draw_class_entities_on_img(entities)
+    #shape_detector.image = util.remove_generic_entities_in_image(shape_detector.image, entities)
+    shape_detector.image = diagram_converter.draw_class_entities_on_img(entities)
 
     # Label contours
     shape_detector.label_contours()

@@ -85,9 +85,6 @@ class ShapeDetector:
 
         return found_shapes, cons, hierarchy
 
-    def draw_class_entities_on_img(self, entities):
-        self.image = util.draw_class_entities_on_img(entities, self.image)
-
     def label_contours(self):
         self.image = util.label_contours_in_image(self.contours, self.image)
 

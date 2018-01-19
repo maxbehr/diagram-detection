@@ -61,3 +61,7 @@ class ClassDiagramConverter(DiagramConverter):
     def get_attributes(self):
         attributes = util.get_contour_children_for(self.shape.contour_index, self.shape_detector.hierarchy)
         return attributes
+
+    def draw_class_entities_on_img(self, entities):
+        entities = filter(lambda x: x.type == ClassDiagramTypes.CLASS_ENTITY, entities)
+        return util.draw_entities_on_image(self.shape_detector.image, entities)
