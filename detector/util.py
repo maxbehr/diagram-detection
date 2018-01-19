@@ -118,6 +118,21 @@ def detect_shape(c):
     return ShapeType.UNIDENTIFIED
 
 
+def label_entities_in_image(entities, image):
+    """
+    Labels shapes that are contained in the given generic entitites. The added text contains the detected shape names.
+    :param entities: Generic entities that contain the shapes you want to label
+    :param image: The image the labels will be placed on
+    :return: An copy of the given image with the added labels
+    """
+    image = image.copy()
+    for e in entities:
+        for s in e.shapes:
+            text = ShapeType.to_s(s.shape)
+            put_text_in_img(image, text, int(s.x), int(s.y))
+    return image
+
+
 def label_contours_in_image(contours, image):
     """
     Labels the given contours in the given image. Puts their indices as text onto the image.
@@ -127,8 +142,23 @@ def label_contours_in_image(contours, image):
     image = image.copy()
     for i, c in enumerate(contours):
         (x, y, w, h) = cv2.boundingRect(c)
-        cv2.putText(image, str(i), (int(x+w/2), int(y+h/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+        put_text_in_img(image, str(i), int(x+w/2), int(y+h/2))
     return image
+
+
+def put_text_in_img(image, text, x, y, size=0.5, color=(0,0,0), thickness=1):
+    """
+    Puts the given text on the given image for the given x- and y-coordinate.
+    :param image: Image the text is put on
+    :param text: The text that will be drawn
+    :param x: x coordinate of the text
+    :param y: y coordinate of the text
+    :param size: the font size
+    :param color: the font color
+    :param thickness: the font thickness
+    :return:
+    """
+    cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, size, color, thickness, cv2.LINE_AA)
 
 
 def save_image(image, filename):
@@ -200,6 +230,20 @@ def create_shape_hierarchy(image):
                 contour_map[parent_id] = contour_arr
 
     return contour_map, cnts
+
+
+def draw_entities_on_image(image, generic_entities):
+    """
+    Draws the contours of all contained shapes of the given generic entities.
+    :param image: The image the contours will be drawn on
+    :param generic_entities: The generic entities we extract the shapes and its contours from
+    :return: A copy of the image that contains the drawn contours.
+    """
+    image = image.copy()
+    for e in generic_entities:
+        contours = [s.contour for s in e.shapes]
+        draw_contours_on_image(contours, image)
+    return image
 
 
 def draw_contours_on_image(contours, image, color=(0, 255, 0)):
@@ -396,12 +440,6 @@ def group_contours_by_x_pos(contours):
     return group
 
 
-def draw_entities_on_image(img, generic_entities):
-    img = img.copy()
-    for e in generic_entities:
-        contours = [s.contour for s in e.shapes]
-        draw_contours_on_image(contours, img)
-    return img
 
 
 def create_canny_edge_image(image, min=100, max=200):
