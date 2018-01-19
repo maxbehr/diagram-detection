@@ -1,13 +1,15 @@
 
 class GenericEntity:
-    def __init__(self, shape):
-        self.shape = shape
-        self.type = None
+    def __init__(self, type=None):
+        self.type = type
         self.data = {}
-        self.methods = {}
+        self.shapes = []
 
-    def add_method(self, name, func):
-        self.methods[name] = func
+    def add_shape(self, shape):
+        self.shapes.append(shape)
+
+    def get_all_contours(self):
+        return [s.contour for s in self.shapes]
 
     def call(self, name):
         getattr(self, name)()
