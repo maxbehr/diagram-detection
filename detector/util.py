@@ -340,6 +340,31 @@ def get_sorted_contours_for_hierachy_entries(contours, hierarchy_entries, sort_m
     return mixed
 
 
+def get_sorted_contours_by_parent(contours, hierarchy, discard_contours_without_parent=True):
+    """
+    Maps the given contours by their parent and groups them together.
+    :param contours: Contours you want to sort
+    :param hierarchy: Hierarchy of the contours
+    :param discard_contours_without_parent: Defines if contours without parent (-1) are dropped
+                true    => skip those contours
+                false   => keep those contours
+    :return: Dictionary that contains the parent ids as key and their contours as list
+    """
+    sorted_contours = {}
+    for i, hierarchy_entry in enumerate(hierarchy[0]):
+        contour = contours[i]
+        parent_id = hierarchy_entry[3]
+
+        if discard_contours_without_parent and parent_id == -1:
+            pass
+        else:
+            if parent_id not in sorted_contours:
+                sorted_contours[parent_id] = []
+            sorted_contours[parent_id].append(contour)
+
+    return sorted_contours
+
+
 def draw_class_entities_on_img(class_entities, img):
     """
     Draws the contours of the given generic entitites - in this case UML classes. Colours the different parts, such as

@@ -39,7 +39,6 @@ class ShapeDetector:
         self.image = util.create_working_copy_of_image(image)
         self.preprocessed_image = util.preprocess_image(self.image)
 
-
     def get_shapes(self):
         return self.shapes
 
@@ -163,6 +162,9 @@ class ShapeDetector:
         img = self.get_image_remove_shape_type(shape_type)
         _, contours_remove, _ = self.find_shapes_in_image(img)
         return self.get_image_remove_contours(contours_remove)
+
+    def sort_contours_by_parent(self):
+        return util.get_sorted_contours_by_parent(self.contours, self.hierarchy)
 
     def show_result(self):
         """
