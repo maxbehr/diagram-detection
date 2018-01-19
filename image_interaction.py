@@ -27,7 +27,7 @@ def image_interaction(ch, image, img_path):
         image = util.erode(image)
 
     # C - Find Classes
-    if ch == 49:
+    if ch == 97:
         shape_detector = ShapeDetector(img_path)
         shapes = shape_detector.find_shapes()
         diagram_converter = DiagramTypeDetector.find_converter(shape_detector)

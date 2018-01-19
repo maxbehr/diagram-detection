@@ -11,11 +11,12 @@ output_file = "./output/found_shapes.xml"
 
 if __name__ == '__main__':
 
-    #img_path = "img/class_diagram_notation.jpeg"
+    img_path = "img/class_diagram_notation.jpeg"
     #img_path = "img/class_pencil.jpeg"
+
     #img_path = "img/class.jpeg"
     #img_path = "img/class_many.jpeg"
-    img_path = "img/class2.jpeg"
+    #img_path = "img/class2.jpeg"
     #img_path = "img/usecase.jpeg"
     #img_path = "img/circles.jpeg"
     #img_path = "img/ocr_test.jpeg"
@@ -45,10 +46,12 @@ if __name__ == '__main__':
 
     # Draw class contours
     #shape_detector.image = util.remove_generic_entities_in_image(shape_detector.image, entities)
-    shape_detector.image = diagram_converter.draw_class_entities_on_img(class_entities)
+    #shape_detector.image = diagram_converter.draw_class_entities_on_img(class_entities)
+    shape_detector.image = util.draw_entities_on_image(shape_detector.image, assoc_entities)
+    shape_detector.image = util.label_entities_in_image(assoc_entities, shape_detector.image)
 
     # Label contours
-    shape_detector.label_contours()
+    #shape_detector.label_contours()
 
     # Open result in window
     cv2.namedWindow("Image", cv2.WINDOW_AUTOSIZE)

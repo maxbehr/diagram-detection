@@ -150,19 +150,24 @@ if __name__ == '__main__':
             log("Erode")
             image = util.erode(image)
 
-        # C - Find Classes
+        # 1 - Draw contours
         if ch == 49:
             shape_detector.load(image)
             shapes = shape_detector.find_shapes()
-            diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
-            #entities = diagram_converter.extract_classes()
-            #image = util.draw_class_entities_on_img(entities, image)
-            #log(f"{len(shapes)} shapes in image found")
-
             contours = [s.contour for s in shape_detector.shapes]
             image = util.draw_labeled_contours(contours, shape_detector.hierarchy, image)
 
-            log(shape_detector.hierarchy)
+        # 2 - Find Classes
+        if ch == 50:
+            shape_detector.load(image)
+            shapes = shape_detector.find_shapes()
+            diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
+            entities = diagram_converter.extract_classes()
+            image = util.draw_class_entities_on_img(entities, image)
+            #log(f"{len(shapes)} shapes in image found")
+
+            #contours = [s.contour for s in shape_detector.shapes]
+            #image = util.draw_labeled_contours(contours, shape_detector.hierarchy, image)
 
         # B - Binary
         if ch == 98:
