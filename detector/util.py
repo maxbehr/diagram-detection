@@ -40,6 +40,10 @@ def area_contour(c):
 
 
 def print_contour_details(c):
+    log(get_contour_details(c))
+
+
+def get_contour_details(c):
     """
     Prints some detailed information of the given contour.
 
@@ -54,7 +58,7 @@ def print_contour_details(c):
     shape_type = detect_shape(c)
     shape = ShapeType.to_s(shape_type=shape_type)
 
-    log(f"Contour - shape: {shape}, sides: {sides}, ratio: {aspect_ratio(c)}, x: {x}, y: {y}, w: {w}, h: {h}, area: {area_contour(c)}")
+    return f"Contour - shape: {shape}, sides: {sides}, ratio: {aspect_ratio(c)}, x: {x}, y: {y}, w: {w}, h: {h}, area: {area_contour(c)}"
 
 
 def print_image_details(image):
@@ -203,6 +207,21 @@ def draw_contours_on_image(contours, image, color=(0, 255, 0)):
 
     log(f"Draw {len(contours)} contours")
     cv2.drawContours(image, contours, -1, color, 2)
+
+
+def draw_labeled_contours(contours, hierachy, image, color=(0, 0, 255)):
+    # Draw contours
+    draw_contours_on_image(contours, image, color)
+    image = image.copy()
+
+    # Draw shape names beside contour
+    for i, c in enumerate(contours):
+        (x, y, w, h) = cv2.boundingRect(c)
+        shape_name = detect_shape(c)
+        parent_id = hierachy[0][i][3]
+        txt = f"{ShapeType.to_s(shape_name)} ({parent_id})"
+        cv2.putText(image, txt, (int(x+w/2), int(y+h/2)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1, cv2.LINE_AA)
+    return image
 
 
 def draw_labeled_lines(image, lines, color=(0, 0, 255), toggle_line_drawing=True, toggle_label_drawing=True):

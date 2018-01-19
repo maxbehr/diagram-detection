@@ -9,7 +9,7 @@ import detector.util as util
 
 
 class ShapeDetector:
-    def __init__(self, image):
+    def __init__(self, image=None):
         self.orig_image = None
         """ Reference to the original image. A working copy will be created from this image. """
 
@@ -25,15 +25,20 @@ class ShapeDetector:
         self.contours = None
         self.hierarchy = None
 
-        self._load(image)
+        if image is not None:
+            self._load(image)
 
         util.log("ShapeDetector initialized")
 
     def _load(self, image_path):
         log(f"ShapeDetector: load image '{image_path}' and create working copy")
         self.orig_image = cv2.imread(image_path)
-        self.image = util.create_working_copy_of_image(self.orig_image)
+        self.load(self.orig_image)
+
+    def load(self, image):
+        self.image = util.create_working_copy_of_image(image)
         self.preprocessed_image = util.preprocess_image(self.image)
+
 
     def get_shapes(self):
         return self.shapes

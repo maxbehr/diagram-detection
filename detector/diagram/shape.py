@@ -1,5 +1,6 @@
 import cv2
 import detector.util as util
+from detector.util import *
 import os
 from detector.shape_type import ShapeType
 
@@ -68,3 +69,7 @@ class Shape:
         :return:
         """
         util.print_contour_details(self.contour)
+
+
+    def __str__(self):
+        return util.get_contour_details(self.contour)
