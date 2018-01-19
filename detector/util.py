@@ -14,6 +14,11 @@ EPSILON_FACTOR = 0.04
 OUTPUT_PATH = "output/"
 """ Defines the path images will be saved to """
 
+EROSION_BY = 5
+""" Amount pixel that are applied to bounding box of a contour when removing contours from image. Default is 5. """
+
+CONTOUR_REMOVAL_COLOR = (255, 255, 255)
+""" Color that is used to remove shapes and contours. Default is white (255, 255, 255). """
 
 def aspect_ratio(c):
     """
@@ -391,31 +396,11 @@ def group_contours_by_x_pos(contours):
     return group
 
 
-def draw_class_entities_on_img(class_entities, img):
-    """
-    Draws the contours of the given generic entitites - in this case UML classes. Colours the different parts, such as
-    name, attributes and methods differently. The contours will be drawn on the given image.
-    :param class_entities: Class entities we want to draw contours of.
-    :param img: The image the contours will be drawn on.
-    :return:
-    """
+def draw_entities_on_image(img, generic_entities):
     img = img.copy()
-    for e in class_entities:
-        # Draw name contour
-        name_contour = e.get("name_contour")
-        print_contour_details(name_contour)
-        draw_contours_on_image([name_contour], img, color=(255, 0, 0))
-
-        # Draw attribute contour
-        attribute_contour = e.get("attribute_contour")
-        print_contour_details(attribute_contour)
-        draw_contours_on_image([attribute_contour], img, color=(0, 0, 255))
-
-        # Draw method contour
-        method_contour = e.get("method_contour")
-        print_contour_details(method_contour)
-        draw_contours_on_image([method_contour], img)
-
+    for e in generic_entities:
+        contours = [s.contour for s in e.shapes]
+        draw_contours_on_image(contours, img)
     return img
 
 
@@ -438,7 +423,6 @@ def erode(image, kernel=np.ones((5,5), np.uint8), iterations=1):
     :param iterations: The amount how many time the image will be eroded
     :return: The eroded image
     """
-
     return cv2.erode(image, kernel, iterations)
 
 
@@ -451,6 +435,43 @@ def dilate(image, kernel=np.ones((5,5), np.uint8), iterations=1):
     :return: The dilated image
     """
     return cv2.dilate(image, kernel, iterations)
+
+
+def remove_generic_entities_in_image(image, generic_entities, type=None):
+    """
+    Removes the given generic entities from the image. Uses the contours of the contained shapes in a generic entity.
+    The generic entities that you want to be removed can be filtered by a type. If no type is given, all generic
+    entities will be removed.
+    :param image: Image the generic entities are removed from
+    :param generic_entities: List of generic entities
+    :param type: The type of the generic entities you want to remove (None if you want to remove all)
+    :return: The image with the generic entitites removed
+    """
+    image = image.copy()
+    if type is not None:
+        generic_entities = filter(lambda x: x.type == type, generic_entities)
+
+    for e in generic_entities:
+        contours = [s.contour for s in e.shapes]
+        image = remove_contours_in_image(image, contours)
+
+    return image
+
+
+def remove_contours_in_image(image, contours):
+    """
+    Places white rectangles over the given contours in order to remove them from the given image. The white rectangles
+    are drawn bigger than the contours themselves. The amount the drawn rectangle is bigger is defined by the
+    EROSION_BY constant. Default is 5 pixel.
+    :param image: Image the contours will be removed from
+    :param contours: Contours that will be removed
+    :return: The image with removed contours
+    """
+    image = image.copy()
+    for c in contours:
+        (x, y, w, h) = cv2.boundingRect(c)
+        cv2.rectangle(image, (x-EROSION_BY, y-EROSION_BY), (x+w+EROSION_BY, y+h+EROSION_BY), CONTOUR_REMOVAL_COLOR, -1)
+    return image
 
 
 def create_inverted_image(image):
