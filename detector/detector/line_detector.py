@@ -1,3 +1,5 @@
+from detector.line import Line
+from detector.point import Point
 from detector.util import *
 import detector.util as util
 import math
@@ -7,20 +9,32 @@ class LineDetector:
     max_point_distance = 30
     """ Defines the maximum distance two points can have in order to be seen as one point """
 
-    def __init__(self, image):
-        self.image = image
-        self.lines = None
+    def __init__(self):
+        self.edge_image = None
+        self.lines = []
         self.LSD = None
 
         util.log("LineDetector initialized")
 
-    def init(self):
-        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+    def init_with_image(self, image):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gauss = cv2.GaussianBlur(gray, (9, 9), 0)
-        edges = cv2.Canny(gauss, 100, 150)
+        self.edge_image = cv2.Canny(gauss, 100, 150)
+
+    def init(self, canny_image):
+        self.edge_image = canny_image
+
+    def find_lines(self):
         self.LSD = cv2.createLineSegmentDetector()
-        lines, width, prec, nfa = self.LSD.detect(edges)
-        self.lines = lines
+        lines, width, prec, nfa = self.LSD.detect(self.edge_image)
+
+        for i in range(len(lines)):
+            for x1, y1, x2, y2 in lines[i]:
+                line = Line(Point(x1, y1), Point(x2, y2))
+                self.lines.append(line)
+
+        log(f"{len(self.lines)} lines found")
+        return self.lines
 
     def is_same_point(point_a, point_b):
         return point_a.get_xy_tuple() == point_b.get_xy_tuple()
@@ -51,14 +65,32 @@ class LineDetector:
                 return True
         return False
 
-    def merge_lines(lines):
+    def merged_lines(self):
+        return self._merge_lines(self.lines)
+
+    def filter_lines(self, **args):
+        return self._filter_lines(self.lines, **args)
+
+    def _filter_lines(self, lines, min_length=None, max_length=None):
+        filtered_lines = lines
+
+        if min_length is not None:
+            filtered_lines = [l for l in filtered_lines if l.length() >= min_length]
+
+        if max_length is not None:
+            filtered_lines = [l for l in filtered_lines if l.length() < max_length]
+
+        return filtered_lines
+
+    def _merge_lines(self, lines):
         merged_lines = []
         for line in lines:
             if not LineDetector.is_line_in(merged_lines, line):
                 merged_lines.append(line)
+        log(f"{len(merged_lines)} merged lines")
         return merged_lines
 
-    def purge_lines(lines, min_line_length=100):
+    def _purge_lines(self, lines, min_line_length=100):
         purged_lines = []
         for line in lines:
             if not LineDetector.is_line_in(purged_lines, line):
