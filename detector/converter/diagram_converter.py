@@ -19,5 +19,9 @@ class DiagramConverter(object):
     def transform_shapes_to_diagram(self):
         raise NotImplementedError()
 
+    @classmethod
+    def is_diagram():
+        raise NotImplementedError()
+
     def get_generic_entities(self):
         return self.generic_entities
