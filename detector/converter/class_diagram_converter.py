@@ -1,9 +1,9 @@
 from detector import util
-from detector.diagram.shape import Shape
+from detector.primitives.shape import Shape
 from detector.util import log
 from detector.util import ShapeType
 from detector.converter.diagram_converter import DiagramConverter
-from detector.diagram.generic_entity import GenericEntity
+from detector.primitives.generic_entity import GenericEntity
 
 
 class ClassDiagramTypes:
@@ -14,8 +14,8 @@ class ClassDiagramTypes:
 class ClassDiagramConverter(DiagramConverter):
     CONVERTER_TYPE = "class_diagram"
 
-    def transform_shapes_to_diagram(self):
-        log("transform to class diagram")
+    def convert(self):
+        log("transform to class primitives")
         self._extract_classes()
         self._extract_associations()
 

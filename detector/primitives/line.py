@@ -1,5 +1,6 @@
 from detector.util import distance_between
 
+
 class Line:
     def __init__(self, point_a, point_b):
         self.point_a = point_a

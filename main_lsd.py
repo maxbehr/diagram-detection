@@ -1,16 +1,11 @@
-import argparse
 import cv2
 import math
 
-from detector.detector import *
 from detector import util
-from detector.line import *
-from detector.point import Point
-from detector.shape_type import ShapeType
+from detector.primitives.line import *
+from detector.primitives.point import Point
 from detector.util import log
-import numpy as np
 import imutils
-import time
 
 winname = "LSD test"
 wincanny = "canny"

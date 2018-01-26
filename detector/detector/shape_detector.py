@@ -1,10 +1,6 @@
-import cv2
-import imutils
-from imutils import contours
 from detector.util import *
 import numpy as np
-from detector.shape_type import ShapeType
-from detector.diagram.shape import Shape
+from detector.primitives.shape import Shape
 import detector.util as util
 
 
@@ -58,7 +54,7 @@ class ShapeDetector:
 
         :return: Array with all found shapes
         """
-        # Holds the area of all rects that were defined as class diagram rectangles
+        # Holds the area of all rects that were defined as class primitives rectangles
         area_rects = 0
         # img, contours, hierarchy = detect_contours(proc_image)
         im, cnts, hierarchy = detect_contours(image)

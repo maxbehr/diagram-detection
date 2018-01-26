@@ -31,8 +31,8 @@ def image_interaction(ch, image, img_path):
         shape_detector = ShapeDetector(img_path)
         shapes = shape_detector.find_shapes()
         diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
-        entities = diagram_converter.extract_classes()
-        image = util.draw_class_entities_on_img(entities, image)
+        entities = diagram_converter._extract_classes()
+        image = util.draw_entities_on_image(entities, image)
         log(f"{len(shapes)} shapes in image found")
 
     # S - Extract Shapes

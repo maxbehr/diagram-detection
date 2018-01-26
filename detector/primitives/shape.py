@@ -1,8 +1,7 @@
-import cv2
 import detector.util as util
 from detector.util import *
 import os
-from detector.shape_type import ShapeType
+from detector.primitives.shape_type import ShapeType
 
 
 class Shape:

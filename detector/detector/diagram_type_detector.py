@@ -1,13 +1,3 @@
-import cv2
-import imutils
-from imutils import contours
-
-from detector.util import *
-import numpy as np
-from detector.shape_type import ShapeType
-from detector.diagram.shape import Shape
-import detector.util as util
-
 from detector.converter import *
 
 

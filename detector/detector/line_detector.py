@@ -1,5 +1,5 @@
-from detector.line import Line
-from detector.point import Point
+from detector.primitives.line import Line
+from detector.primitives.point import Point
 from detector.util import *
 import detector.util as util
 import math

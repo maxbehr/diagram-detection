@@ -1,13 +1,3 @@
-import cv2
-import imutils
-from imutils import contours
-from detector.util import *
-import numpy as np
-from detector.diagram.shape import Shape
-from detector.shape_type import ShapeType
-import detector.util as util
-
-
 class DiagramConverter(object):
     CONVERTER_TYPE = None
 
@@ -16,11 +6,10 @@ class DiagramConverter(object):
         """ Shape detector, that contains all detected shapes, the contours and the contour hierarchy. """
         self.generic_entities = []
 
-    def transform_shapes_to_diagram(self):
+    def convert(self):
         raise NotImplementedError()
 
-    @classmethod
-    def is_diagram():
+    def is_diagram(self):
         raise NotImplementedError()
 
     def get_generic_entities(self):

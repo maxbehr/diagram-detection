@@ -3,9 +3,7 @@ import cv2
 from detector.detector import *
 from detector import util
 from detector.detector.line_detector import LineDetector
-from detector.shape_type import ShapeType
 from detector.util import log
-import numpy as np
 
 ap = argparse.ArgumentParser()
 output_file = "./output/found_shapes.xml"

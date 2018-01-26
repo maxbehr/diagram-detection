@@ -2,7 +2,7 @@ import cv2
 import imutils
 import os
 import time
-from detector.shape_type import ShapeType
+from detector.primitives.shape_type import ShapeType
 import pytesseract
 from PIL import Image
 import numpy as np

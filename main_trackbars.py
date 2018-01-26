@@ -2,7 +2,7 @@ import argparse
 import cv2
 from detector.detector import *
 from detector import util
-from detector.shape_type import ShapeType
+from detector.primitives.shape_type import ShapeType
 from detector.util import log
 import numpy as np
 
