@@ -4,8 +4,8 @@ import math
 
 from detector.detector import *
 from detector import util
-from detector.point import *
 from detector.line import *
+from detector.point import Point
 from detector.shape_type import ShapeType
 from detector.util import log
 import numpy as np
