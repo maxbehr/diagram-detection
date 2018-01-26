@@ -1,13 +1,19 @@
-from detector.util import *
+from detector import util
+from detector.primitives.shape import Shape
+from detector.util import log
+from detector.util import ShapeType
 from detector.converter.diagram_converter import DiagramConverter
+from detector.primitives.generic_entity import GenericEntity
 
 
 class UseCaseDiagramConverter(DiagramConverter):
-    CONVERTER_TYPE = "use_case_diagram"
+    CONVERTER_TYPE = "usecase_diagram"
 
-    def transform_shapes_to_diagram(self):
-        log("transform to use case diagram")
+    def convert(self):
+        log("transform to use case primitives")
 
-    @classmethod
-    def is_diagram(cls, shapes):
+    def is_diagram(cls, shape_detector):
         return False
+
+    def draw_class_entities_on_img(self, entities):
+        pass
