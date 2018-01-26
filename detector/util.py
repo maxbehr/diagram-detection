@@ -440,8 +440,6 @@ def group_contours_by_x_pos(contours):
     return group
 
 
-
-
 def create_canny_edge_image(image, min=100, max=200):
     """
     Applies the canny edge detection to the given image.

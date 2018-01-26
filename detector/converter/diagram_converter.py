@@ -13,8 +13,8 @@ class DiagramConverter(object):
 
     def __init__(self, shape_detector):
         self.shape_detector = shape_detector
-        self.generic_entities = []
         """ Shape detector, that contains all detected shapes, the contours and the contour hierarchy. """
+        self.generic_entities = []
 
     def transform_shapes_to_diagram(self):
         raise NotImplementedError()

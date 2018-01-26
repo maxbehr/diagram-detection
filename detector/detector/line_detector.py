@@ -17,16 +17,31 @@ class LineDetector:
         util.log("LineDetector initialized")
 
     def init_with_image(self, image):
+        """
+        Initializes the Line Detector with an image that has not been processed with an edge detection, but will be
+        Canny Edge'd by this method.
+        :param image: Image that will be processed.
+        """
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gauss = cv2.GaussianBlur(gray, (9, 9), 0)
         self.edge_image = cv2.Canny(gauss, 100, 150)
 
     def init(self, canny_image):
+        """
+        Initializes the Line Detector with an image that already contains only its edges.
+        :param canny_image:
+        :return:
+        """
         self.edge_image = canny_image
 
     def find_lines(self):
+        """
+        Creates a LineSegmentDetector and finds lines in the image, which are stored and returned.
+        :return: List of Line objects
+        """
         self.LSD = cv2.createLineSegmentDetector()
         lines, width, prec, nfa = self.LSD.detect(self.edge_image)
+        # self.LSD.drawSegments(image, lines)
 
         for i in range(len(lines)):
             for x1, y1, x2, y2 in lines[i]:
