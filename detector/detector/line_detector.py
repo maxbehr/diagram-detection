@@ -65,6 +65,13 @@ class LineDetector:
     def are_lines_connected(line_a, line_b):
         return line_a.end_xy == line_b.start_xy or line_a.end_xy == line_b.end_xy
 
+    def are_lines_close(line_a, line_b):
+        close = LineDetector.is_point_close(line_a.start(), line_b.start()) or \
+                LineDetector.is_point_close(line_a.start(), line_b.end()) or \
+                LineDetector.is_point_close(line_a.end(), line_b.start()) or \
+                LineDetector.is_point_close(line_a.end(), line_b.end())
+        return close
+
     def is_point_close(p1, p2):
         return LineDetector.is_close(*p1.get_xy_tuple(), *p2.get_xy_tuple()) #and is_close(*p2.get_xy_tuple(), *p1.get_xy_tuple())
 
@@ -96,6 +103,11 @@ class LineDetector:
             filtered_lines = [l for l in filtered_lines if l.length() < max_length]
 
         return filtered_lines
+
+    def filter_by_angle(lines, min_angle=0):
+        lines = [(l1, l2) for l1 in lines for l2 in lines if util.angle_between_lines(l1, l2) >= min_angle and LineDetector.are_lines_close(l1, l2)]
+        log(f"{len(lines)} angle lines")
+        return lines
 
     def _merge_lines(self, lines):
         merged_lines = []

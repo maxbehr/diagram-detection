@@ -534,6 +534,53 @@ def distance_between(a, b):
     return math.sqrt(s1 + s2)
 
 
+def line_slope(line):
+    """
+    Calculates the slope of the given line. Uses the start and end point of the given line.
+    :param line: The line you want the slope to be calculated for.
+    :return: The slope of the line
+    """
+    return slope(line.start(), line.end())
+
+
+def slope(a, b):
+    """
+    Calculates the slope between the given two points.
+    :param a: Point a
+    :param b: Point b
+    :return: Slope between two points
+    """
+    x1, y1 = a.get_xy_tuple()
+    x2, y2 = b.get_xy_tuple()
+    return y2 - y1 / x2 - x1
+
+
+def angle_for_slopes(m1, m2):
+    """
+    Calculates the angle between two slopes.
+    :param m1: Slope a
+    :param m2: Slope b
+    :return: Returns the angle in degrees
+    """
+    m1 = float(m1)
+    m2 = float(m2)
+    talpha = np.absolute((m1 - m2) / (1 + (m1 * m2)))
+    return np.rad2deg(np.arctan(talpha))
+
+
+def angle_between_lines(line_a, line_b):
+    """
+    Calculates the angle between the given two lines.
+    :param line_a: Line a
+    :param line_b: Line b
+    :return: The angle in degrees
+    """
+    slope_a = line_slope(line_a)
+    slope_b = line_slope(line_b)
+    log(f"angle between line A and line B: {angle_for_slopes(slope_a, slope_b)}")
+    return angle_for_slopes(slope_a, slope_b)
+
+
 def log(str):
     """
     Logs the given string to the console.
