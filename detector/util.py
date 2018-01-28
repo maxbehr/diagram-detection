@@ -283,6 +283,7 @@ def draw_labeled_lines(image, lines, color=(0, 0, 255), toggle_line_drawing=True
     :param toggle_label_drawing: Defines if the labels will be drawn (true => draw labels, false => draw no labels)
     :return:
     """
+    image = image.copy()
     for i,l in enumerate(lines):
         start = l.start_xy()
         end = l.end_xy()
@@ -295,6 +296,8 @@ def draw_labeled_lines(image, lines, color=(0, 0, 255), toggle_line_drawing=True
             x = int(start[0])
             y = int(start[1])
             cv2.putText(image, str(i), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1, cv2.LINE_AA)
+
+    return image
 
 
 def create_working_copy_of_image(image):
