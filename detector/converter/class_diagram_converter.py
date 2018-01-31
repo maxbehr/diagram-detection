@@ -16,10 +16,9 @@ class ClassDiagramConverter(DiagramConverter):
 
     def convert(self):
         log("transform to class primitives")
-        extracted_classes = self._extract_classes()
-        extracted_associations = self._extract_associations()
+        self.generic_entities = self.generic_entities + self._extract_classes()
+        self.generic_entities = self.generic_entities + self._extract_associations()
 
-        self.generic_entities = extracted_classes + extracted_associations
         return self.generic_entities
 
     def _extract_classes(self):

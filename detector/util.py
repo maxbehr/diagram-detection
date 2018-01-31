@@ -424,14 +424,14 @@ def group_contours_by_x_pos(contours):
     :param contours:
     :return:
     """
-    tolerance = 35
+    tolerance = 55
     group = {}
     for c in contours:
         x, y, w, h = cv2.boundingRect(c)
 
         was_added = False
         for key in group.keys():
-            if (int(key) - tolerance) < x < (int(key) + tolerance):
+            if (int(key) - tolerance) <= x <= (int(key) + tolerance):
                 group[key].append(c)
                 was_added = True
 
