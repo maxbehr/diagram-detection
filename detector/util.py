@@ -17,7 +17,7 @@ OUTPUT_PATH = "output/"
 EROSION_BY = 5
 """ Amount pixel that are applied to bounding box of a contour when removing contours from image. Default is 5. """
 
-CONTOUR_REMOVAL_COLOR = (255, 255, 255)
+CONTOUR_REMOVAL_COLOR = (0,0,0)
 """ Color that is used to remove shapes and contours. Default is white (255, 255, 255). """
 
 def aspect_ratio(c):
@@ -487,6 +487,8 @@ def remove_generic_entities_in_image(image, generic_entities, type=None):
     :return: The image with the generic entitites removed
     """
     image = image.copy()
+    image = preprocess_image(image)
+
     if type is not None:
         generic_entities = filter(lambda x: x.type == type, generic_entities)
 
