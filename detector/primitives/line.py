@@ -31,6 +31,29 @@ class Line:
         """
         return Line._slope(self.point_a, self.point_b)
 
+    def bounding_box(self):
+        x1, y1 = self.start_xy()
+        x2, y2 = self.end_xy()
+
+        if x1 < x2:
+            xb1 = x1
+            xb2 = x2
+        else:
+            xb1 = x2
+            xb2 = x1
+
+        if y1 < y2:
+            yb1 = y1
+            yb2 = y2
+        else:
+            yb1 = y2
+            yb2 = y1
+
+        wb = xb2 - xb1
+        hb = yb2 - yb1
+
+        return xb1, yb1, wb, hb
+
     def _slope(a, b):
         """
         Calculates the slope between the given two points.
