@@ -46,11 +46,13 @@ class ClassDiagramConverter(DiagramConverter):
 
                     found_classes.append(new_class)
 
+        log(f"{len(found_classes)} class entities found")
         return found_classes
 
     def _extract_associations(self):
         class_entities = [e for e in self.generic_entities if e.type == ClassDiagramTypes.CLASS_ENTITY]
         img = util.remove_generic_entities_in_image(self.shape_detector.preprocessed_image, class_entities)
+        # Remove class entitites in order to find associations
         shapes, _, _ = self.shape_detector.find_shapes_in_image(img)
         log(f"Extract associations from {len(shapes)} shapes")
 
@@ -61,6 +63,7 @@ class ClassDiagramConverter(DiagramConverter):
 
             found_associations.append(new_assoc)
 
+        log(f"{len(found_associations)} associations entities found")
         return found_associations
 
     @classmethod

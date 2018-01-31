@@ -295,7 +295,7 @@ def draw_labeled_lines(image, lines, color=(0, 0, 255), toggle_line_drawing=True
         if toggle_label_drawing:
             x = int(start[0])
             y = int(start[1])
-            cv2.putText(image, str(i), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1, cv2.LINE_AA)
+            cv2.putText(image, str(i), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1, cv2.LINE_AA)
 
     return image
 
@@ -481,7 +481,7 @@ def remove_generic_entities_in_image(image, generic_entities, type=None):
     Removes the given generic entities from the image. Uses the contours of the contained shapes in a generic entity.
     The generic entities that you want to be removed can be filtered by a type. If no type is given, all generic
     entities will be removed.
-    :param image: Image the generic entities are removed from
+    :param image: Original image (not modified) you want the generic entities removed from
     :param generic_entities: List of generic entities
     :param type: The type of the generic entities you want to remove (None if you want to remove all)
     :return: The image with the generic entitites removed
