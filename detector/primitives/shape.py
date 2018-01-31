@@ -67,7 +67,7 @@ class Shape:
         Prints some information, such as shape type, amount of sides, ratio, etc. to the console.
         :return:
         """
-        util.print_contour_details(self.contour)
+        return util.print_contour_details(self.contour)
 
 
     def __str__(self):

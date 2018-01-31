@@ -19,3 +19,6 @@ class GenericEntity:
 
     def get(self, name):
         return self.data[name]
+
+    def __str__(self):
+        return f"Type id: {self.type} - contains {len(self.shapes)} shapes"

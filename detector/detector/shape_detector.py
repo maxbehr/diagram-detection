@@ -45,6 +45,7 @@ class ShapeDetector:
         self.contours = cons
         self.hierarchy = hierarchy
 
+        log(f"{len(found_shapes)} shapes found")
         return found_shapes
 
     def find_shapes_in_image(self, image):

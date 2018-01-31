@@ -110,6 +110,13 @@ class LineDetector:
         return lines
 
     def _merge_lines(self, lines):
+        """
+        Merges lines after checking if they could be the same.
+        Does not change the lines list of the object.
+
+        :param lines: The lines you want to merge.
+        :return: list of merged lines
+        """
         merged_lines = []
         for line in lines:
             if not LineDetector.is_line_in(merged_lines, line):
@@ -118,6 +125,14 @@ class LineDetector:
         return merged_lines
 
     def _purge_lines(self, lines, min_line_length=100):
+        """
+        Purges the given lines by checking if they could be the same and if their length is as expected.
+        Does not change the lines list of the object.
+
+        :param lines: List of lines that will be checked
+        :param min_line_length: Minimum length a line needs to pass the check
+        :return: list of pruged lines
+        """
         purged_lines = []
         for line in lines:
             if not LineDetector.is_line_in(purged_lines, line):
