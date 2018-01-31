@@ -16,8 +16,10 @@ class ClassDiagramConverter(DiagramConverter):
 
     def convert(self):
         log("transform to class primitives")
-        self._extract_classes()
-        self._extract_associations()
+        extracted_classes = self._extract_classes()
+        extracted_associations = self._extract_associations()
+
+        self.generic_entities = extracted_classes + extracted_associations
         return self.generic_entities
 
     def _extract_classes(self):
@@ -27,6 +29,7 @@ class ClassDiagramConverter(DiagramConverter):
         for k, v in sorted_contours.items():
             contour_groups = util.group_contours_by_x_pos(v)
 
+            found_classes = []
             for group_key, group_value in contour_groups.items():
                 # Create class entities
                 if len(group_value) == 3:
@@ -41,13 +44,24 @@ class ClassDiagramConverter(DiagramConverter):
                     # new_class.set("attribute_contour", group_value[1])
                     # new_class.set("method_contour", group_value[2])
 
-                    self.generic_entities.append(new_class)
+                    found_classes.append(new_class)
 
-        return self.generic_entities
+        return found_classes
 
     def _extract_associations(self):
-        log(f"Extract associations from {len(self.shape_detector.shapes)} shapes")
-        
+        class_entities = [e for e in self.generic_entities if e.type == ClassDiagramTypes.CLASS_ENTITY]
+        img = util.remove_generic_entities_in_image(self.shape_detector.preprocessed_image, class_entities)
+        shapes, _, _ = self.shape_detector.find_shapes_in_image(img)
+        log(f"Extract associations from {len(shapes)} shapes")
+
+        found_associations = []
+        for s in shapes:
+            new_assoc = GenericEntity(ClassDiagramTypes.ASSOCIATION_ENTITY)
+            new_assoc.add_shape(s)
+
+            found_associations.append(new_assoc)
+
+        return found_associations
 
     @classmethod
     def is_diagram(cls, shape_detector):

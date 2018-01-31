@@ -87,11 +87,18 @@ class LineDetector:
                 return True
         return False
 
-    def merged_lines(self):
-        return self._merge_lines(self.lines)
+    def merge_lines(self):
+        self.lines = self._merge_lines(self.lines)
+        return self.lines
 
     def filter_lines(self, **args):
-        return self._filter_lines(self.lines, **args)
+        self.lines = self._filter_lines(self.lines, **args)
+        return self.lines
+
+    def _filter_by_angle(lines, min_angle=0):
+        lines = [(l1, l2) for l1 in lines for l2 in lines if util.angle_between_lines(l1, l2) >= min_angle and LineDetector.are_lines_close(l1, l2)]
+        log(f"{len(lines)} angle lines")
+        return lines
 
     def _filter_lines(self, lines, min_length=None, max_length=None):
         filtered_lines = lines
@@ -103,11 +110,6 @@ class LineDetector:
             filtered_lines = [l for l in filtered_lines if l.length() < max_length]
 
         return filtered_lines
-
-    def filter_by_angle(lines, min_angle=0):
-        lines = [(l1, l2) for l1 in lines for l2 in lines if util.angle_between_lines(l1, l2) >= min_angle and LineDetector.are_lines_close(l1, l2)]
-        log(f"{len(lines)} angle lines")
-        return lines
 
     def _merge_lines(self, lines):
         """
@@ -141,6 +143,27 @@ class LineDetector:
                     purged_lines.append(line)
 
         return purged_lines
+
+    def _same_slope_lines(self):
+        # Get lines with the same slope
+        same_slope_lines = []
+
+        for i in range(len(self.lines)):
+            for j in range(i + 1, len(self.lines)):
+                l1 = self.lines[i]
+                l2 = self.lines[j]
+
+                if l1 is not l2:
+                    slope1 = l1.slope()
+                    slope2 = l2.slope()
+
+                    tol = 5
+
+                    if slope1-tol <= slope2 <= slope1+tol or slope2-tol <= slope1 <= slope2+tol:
+                        longest = l1 if l1.length() > l2.length() else l2
+                        same_slope_lines.append(longest)
+
+        return same_slope_lines
 
     def get_line_end_point_in_other_line(point, lines):
         for l in lines:
