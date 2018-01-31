@@ -25,11 +25,11 @@ class ClassDiagramConverter(DiagramConverter):
     def _extract_classes(self):
         log(f"Extract classes from {len(self.shape_detector.shapes)} shapes")
 
+        found_classes = []
         sorted_contours = self.shape_detector.sort_contours_by_parent()
         for k, v in sorted_contours.items():
             contour_groups = util.group_contours_by_x_pos(v)
 
-            found_classes = []
             for group_key, group_value in contour_groups.items():
                 # Create class entities
                 if len(group_value) == 3:
