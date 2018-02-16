@@ -21,7 +21,9 @@ class GenericEntity:
         self.data[name] = data
 
     def get(self, name):
-        return self.data[name]
+        if name in self.data:
+            return self.data[name]
+        return None
 
     def bounding_box(self, adjustment=constants.BOUNDING_BOX_ADJUSTMENT):
         """
