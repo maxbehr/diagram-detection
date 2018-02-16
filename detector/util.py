@@ -174,6 +174,7 @@ def ocr(image):
     if os.path.isfile(image):
         text = pytesseract.image_to_string(Image.open(image))
         log("Found OCR text: {text}".format(text=text))
+        return text
     else:
         log("Shape::OCR: File doesn't exist")
 
@@ -243,6 +244,19 @@ def draw_entities_on_image(image, generic_entities):
     for e in generic_entities:
         contours = [s.contour for s in e.shapes]
         draw_contours_on_image(contours, image)
+    return image
+
+
+def draw_shapes_on_image(shapes, image):
+    """
+    Draws the given shapes on the given image and returns it.
+    :param shapes: Shapes you want to draw.
+    :param image: Image the shapes are drawn onto.
+    :return: A copy of the image with the shapes drawn onto.
+    """
+    image = image.copy()
+    contours = [s.contour for s in shapes]
+    draw_contours_on_image(contours, image)
     return image
 
 
