@@ -1,3 +1,6 @@
+import detector.constants.constants
+from detector.constants import constants
+
 
 class GenericEntity:
     def __init__(self, type=None):
@@ -20,7 +23,7 @@ class GenericEntity:
     def get(self, name):
         return self.data[name]
 
-    def bounding_box(self, adjustment=0):
+    def bounding_box(self, adjustment=constants.BOUNDING_BOX_ADJUSTMENT):
         """
         Returns the bounding box of this GenericEntity by considering all contained shapes.
         :param adjustment: Pixels that will be applied to the xy-coordinates and the width and height of bounding box,
