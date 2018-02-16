@@ -499,6 +499,18 @@ def angle_between_lines(line_a, line_b):
     return angle_for_slopes(slope_a, slope_b)
 
 
+def is_point_in_area(p1, area):
+    """
+    Checks if the given area contains the given point.
+    :param p1: Point as tuple (x, y)
+    :param area: Area as tuple (x, y, w, h)
+    :return: True if the area contains the point, False otherwise
+    """
+    px, py = p1
+    ax, ay, aw, ah = area
+    return ax <= px <= ax+aw and ay <= py <= ay+ah
+
+
 def log(str):
     """
     Logs the given string to the console.
