@@ -16,6 +16,10 @@ class ClassDiagramTypes:
 class ClassDiagramConverter(DiagramConverter):
     CONVERTER_TYPE = "class_diagram"
 
+    STR_ASSOC_FROM = "ASSOCIATION_FROM"
+    STR_ASSOC_TO = "ASSOCIATION_TO"
+    STR_CLASS_NAME = "CLASS_NAME"
+
     def convert(self):
         log("transform to class primitives")
         self.generic_entities = self.generic_entities + self._extract_classes()
@@ -29,6 +33,7 @@ class ClassDiagramConverter(DiagramConverter):
 
         found_classes = []
         sorted_contours = self.shape_detector.sort_contours_by_parent()
+        class_counter = 0
         for k, v in sorted_contours.items():
             contour_groups = util.group_contours_by_x_pos(v)
 
@@ -36,6 +41,7 @@ class ClassDiagramConverter(DiagramConverter):
                 # Create class entities
                 if len(group_value) == 3:
                     new_class = GenericEntity(ClassDiagramTypes.CLASS_ENTITY)
+                    new_class.set(ClassDiagramConverter.STR_CLASS_NAME, f"Class {class_counter}")
 
                     # Add shapes to class
                     new_class.add_shape(Shape(group_value[0]))
@@ -47,6 +53,7 @@ class ClassDiagramConverter(DiagramConverter):
                     # new_class.set("method_contour", group_value[2])
 
                     found_classes.append(new_class)
+                    class_counter += 1
 
         log(f"{len(found_classes)} class entities found")
         return found_classes
@@ -85,11 +92,11 @@ class ClassDiagramConverter(DiagramConverter):
                 line_end = line.end_xy()
 
                 if util.is_point_in_area(line_start, class_bounding_box):
-                    a.set("ASSOCIATION_FROM", c)
+                    a.set(ClassDiagramConverter.STR_ASSOC_FROM, c)
                     log("FROM association found")
 
-                if util.is_point_in_area(line_end, class_bounding_box):
-                    a.set("ASSOCIATION_TO", c)
+                elif util.is_point_in_area(line_end, class_bounding_box):
+                    a.set(ClassDiagramConverter.STR_ASSOC_TO, c)
                     log("TO association found")
 
     @classmethod
