@@ -1,4 +1,5 @@
 from detector import util
+from detector import draw_util
 from detector.detector import *
 from detector.util import log
 
@@ -32,7 +33,7 @@ def image_interaction(ch, image, img_path):
         shapes = shape_detector.find_shapes()
         diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
         entities = diagram_converter._extract_classes()
-        image = util.draw_entities_on_image(entities, image)
+        image = draw_util.draw_entities_on_image(entities, image)
         log(f"{len(shapes)} shapes in image found")
 
     # S - Extract Shapes

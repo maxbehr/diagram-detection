@@ -1,6 +1,7 @@
 import cv2
 from detector.detector import *
 from detector import util
+from detector import draw_util
 from detector.util import log
 import numpy as np
 
@@ -153,7 +154,7 @@ if __name__ == '__main__':
             shape_detector.load(image)
             shapes = shape_detector.find_shapes()
             contours = [s.contour for s in shape_detector.shapes]
-            image = util.draw_labeled_contours(contours, shape_detector.hierarchy, image)
+            image = draw_util.draw_labeled_contours(contours, shape_detector.hierarchy, image)
 
         # 2 - Find Classes
         if ch == 50:
@@ -161,11 +162,11 @@ if __name__ == '__main__':
             shapes = shape_detector.find_shapes()
             diagram_converter = DiagramTypeDetector.find_converter(shape_detector)
             entities = diagram_converter._extract_classes()
-            image = util.draw_entities_on_image(entities, image)
+            image = draw_util.draw_entities_on_image(entities, image)
             #log(f"{len(shapes)} shapes in image found")
 
             #contours = [s.contour for s in shape_detector.shapes]
-            #image = util.draw_labeled_contours(contours, shape_detector.hierarchy, image)
+            #image = draw_util.draw_labeled_contours(contours, shape_detector.hierarchy, image)
 
         # B - Binary
         if ch == 98:

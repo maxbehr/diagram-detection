@@ -2,6 +2,7 @@ import cv2
 import math
 
 from detector import util
+from detector import draw_util
 from detector.primitives.line import *
 from detector.primitives.point import Point
 from detector.util import log
@@ -298,10 +299,10 @@ if __name__ == '__main__':
 
     log("Draw path lines")
     path_lines = purge_lines(path_lines, 5)
-    util.draw_labeled_lines(lsd_color, path_lines, color=(0, 255, 0))
+    draw_util.draw_labeled_lines(lsd_color, path_lines, color=(0, 255, 0))
 
     log("Draw merged lines")
-    util.draw_labeled_lines(lsd_color, merged_lines)
+    draw_util.draw_labeled_lines(lsd_color, merged_lines)
 
         #cv2.waitKey(1)
         #time.sleep(0.2)
