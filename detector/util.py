@@ -247,6 +247,22 @@ def draw_entities_on_image(image, generic_entities):
     return image
 
 
+def draw_rectangle(image, p1, p2, color=(0, 0, 255), thickness=2):
+    """
+    Creates a copy of the given image and draws a rectangle on it.
+    Wraps the OpenCV rectangle method.
+    :param image: Image the rectangle is drawn onto
+    :param p1: (x, y) tuple of the first point of the rectangle
+    :param p2: (x, y) tuple of the second point of the rectangle
+    :param color: Color of the rectangle
+    :param thickness: Thickness of the rectangle
+    :return: Copy of the given image with the rectangle drawn onto.
+    """
+    image = image.copy()
+    cv2.rectangle(image, p1, p2, color, thickness)
+    return image
+
+
 def draw_shapes_on_image(shapes, image):
     """
     Draws the given shapes on the given image and returns it.
