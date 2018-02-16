@@ -80,7 +80,7 @@ def draw_contours_on_image(contours, image, color=(0, 255, 0)):
     :return:
     """
 
-    log(f"Draw {len(contours)} contours")
+    util.log(f"Draw {len(contours)} contours")
     cv2.drawContours(image, contours, -1, color, 2)
 
 
@@ -115,7 +115,7 @@ def draw_labeled_lines(image, lines, color=(0, 0, 255), toggle_line_drawing=True
         end = l.end_xy()
 
         if toggle_line_drawing:
-            print(f"Draw line: {l}")
+            util.log(f"Draw line: {l}")
             cv2.line(image, start, end, color, 2)
 
         if toggle_label_drawing:
