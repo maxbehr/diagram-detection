@@ -39,14 +39,16 @@ class LineDetector:
         Creates a LineSegmentDetector and finds lines in the image, which are stored and returned.
         :return: List of Line objects
         """
+        self.lines = []
         self.LSD = cv2.createLineSegmentDetector()
         lines, width, prec, nfa = self.LSD.detect(self.edge_image)
         # self.LSD.drawSegments(image, lines)
 
-        for i in range(len(lines)):
-            for x1, y1, x2, y2 in lines[i]:
-                line = Line(Point(x1, y1), Point(x2, y2))
-                self.lines.append(line)
+        if lines is not None:
+            for i in range(len(lines)):
+                for x1, y1, x2, y2 in lines[i]:
+                    line = Line(Point(x1, y1), Point(x2, y2))
+                    self.lines.append(line)
 
         log(f"{len(self.lines)} lines found")
         return self.lines
