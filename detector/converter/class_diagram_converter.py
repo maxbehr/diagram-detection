@@ -1,9 +1,7 @@
-from detector import util
-from detector import draw_util
+from detector import util, draw_util
 from detector.detector.line_detector import LineDetector
 from detector.primitives.shape import Shape
 from detector.util import log
-from detector.util import ShapeType
 from detector.converter.diagram_converter import DiagramConverter
 from detector.primitives.generic_entity import GenericEntity
 
@@ -29,6 +27,10 @@ class ClassDiagramConverter(DiagramConverter):
         return self.generic_entities
 
     def _extract_classes(self):
+        """
+        Extracts the class entities from a class diagram sketch.
+        :return: An array of GenericEntities, were each GenericEntity contains a found class
+        """
         log(f"Extract classes from {len(self.shape_detector.shapes)} shapes")
 
         found_classes = []
@@ -59,11 +61,26 @@ class ClassDiagramConverter(DiagramConverter):
         return found_classes
 
     def _extract_associations(self):
+        """
+        Main method that calls the sub methods in order to extract all associations from the image.
+        :return: An array of GenericEntities, were each GenericEntity contains an extracted association
+        """
         # Remove class entitites in order to find associations
         img = util.remove_generic_entities_in_image(self.shape_detector.image, self.generic_entities, ClassDiagramTypes.CLASS_ENTITY)
 
+        simple_associations = self._extract_simple_associations(img)
+        advanced_associations = self._extract_advanced_associations(img)
+
+        return simple_associations + advanced_associations
+
+    def _extract_simple_associations(self, image):
+        """
+        Tries to extract the associations that are simple lines between classes.
+        :param image: The image the associations are extracted from
+        :return: An array of GenericEntities, were each GenericEntity contains the extracted association
+        """
         line_detector = LineDetector()
-        line_detector.init(img)
+        line_detector.init(image)
         line_detector.find_lines()
         lines = line_detector.merge_lines()
         log(f"{len(lines)} lines found")
@@ -75,10 +92,23 @@ class ClassDiagramConverter(DiagramConverter):
 
             found_associations.append(new_assoc)
 
-        log(f"{len(found_associations)} associations entities found")
+        log(f"{len(found_associations)} simple associations found")
+        return found_associations
+
+    def _extract_advanced_associations(self, image):
+        """
+        Tries to extract the associations such as inheritance, aggregation, composition between classes.
+        :param image: The image the associations are extracted from
+        :return: An array of GenericEntities, were each GenericEntity contains an extracted association
+        """
+        found_associations = []
+        log(f"{len(found_associations)} advanced associations found")
         return found_associations
 
     def _link_associations_with_classes(self):
+        """
+        Links the found classes and associations with each other.
+        """
         log(f"Try linking classes with associations")
         class_entities = self.get_generic_entities(type=ClassDiagramTypes.CLASS_ENTITY)
         assoc_entities = self.get_generic_entities(type=ClassDiagramTypes.ASSOCIATION_ENTITY)
