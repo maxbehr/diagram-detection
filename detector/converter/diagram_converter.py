@@ -12,8 +12,8 @@ class DiagramConverter(object):
     def is_diagram(self):
         raise NotImplementedError()
 
-    def get_generic_entities(self, type=None):
-        if type is not None:
-            return [e for e in self.generic_entities if e.type is type]
+    def get_generic_entities(self, types=[]):
+        if len(types) > 0:
+            return [e for e in self.generic_entities if e.type in types]
         else:
             return self.generic_entities

@@ -21,7 +21,6 @@ def draw_line(image, l, color=(0, 0, 255)):
     image = image.copy()
     start = l.start_xy()
     end = l.end_xy()
-    print(f"Draw line: {l}")
     cv2.line(image, start, end, color, 2)
     return image
 
@@ -79,9 +78,10 @@ def draw_contours_on_image(contours, image, color=(0, 255, 0)):
     :param image: The image the contours are being drawn onto.
     :return:
     """
-
+    image = image.copy()
     util.log(f"Draw {len(contours)} contours")
     cv2.drawContours(image, contours, -1, color, 2)
+    return image
 
 
 def draw_labeled_contours(contours, hierachy, image, color=(0, 0, 255)):
@@ -99,12 +99,13 @@ def draw_labeled_contours(contours, hierachy, image, color=(0, 0, 255)):
     return image
 
 
-def draw_labeled_lines(image, lines, color=(0, 0, 255), toggle_line_drawing=True, toggle_label_drawing=True):
+def draw_labeled_lines(image, lines, color=(0, 0, 255), line_width=2, toggle_line_drawing=True, toggle_label_drawing=True):
     """
     Draws the given lines onto the given image. Labels them as well.
     :param image: Image you want the lines to be drawn on
     :param lines: Lines that will be drawn
     :param color: The color the drawn lines and labels will have
+    :param line_width: Width of the lines
     :param toggle_line_drawing: Defines if the lines will be drawn (true => draw lines, false => draw no lines)
     :param toggle_label_drawing: Defines if the labels will be drawn (true => draw labels, false => draw no labels)
     :return:
@@ -115,8 +116,7 @@ def draw_labeled_lines(image, lines, color=(0, 0, 255), toggle_line_drawing=True
         end = l.end_xy()
 
         if toggle_line_drawing:
-            util.log(f"Draw line: {l}")
-            cv2.line(image, start, end, color, 2)
+            cv2.line(image, start, end, color, line_width)
 
         if toggle_label_drawing:
             x = int(start[0])

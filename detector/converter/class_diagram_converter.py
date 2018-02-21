@@ -110,8 +110,8 @@ class ClassDiagramConverter(DiagramConverter):
         Links the found classes and associations with each other.
         """
         log(f"Try linking classes with associations")
-        class_entities = self.get_generic_entities(type=ClassDiagramTypes.CLASS_ENTITY)
-        assoc_entities = self.get_generic_entities(type=ClassDiagramTypes.ASSOCIATION_ENTITY)
+        class_entities = self.get_generic_entities(types=[ClassDiagramTypes.CLASS_ENTITY])
+        assoc_entities = self.get_generic_entities(types=[ClassDiagramTypes.ASSOCIATION_ENTITY])
 
         for c in class_entities:
             class_bounding_box = c.bounding_box()

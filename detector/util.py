@@ -358,7 +358,7 @@ def group_contours_by_x_pos(contours):
     :param contours:
     :return:
     """
-    tolerance = 55
+    tolerance = 10
     group = {}
     for c in contours:
         x, y, w, h = cv2.boundingRect(c)
@@ -368,6 +368,7 @@ def group_contours_by_x_pos(contours):
             if (int(key) - tolerance) <= x <= (int(key) + tolerance):
                 group[key].append(c)
                 was_added = True
+                break
 
         if not was_added:
             if x not in group:
@@ -410,7 +411,7 @@ def dilate(image, kernel=np.ones((5,5), np.uint8), iterations=1):
     return cv2.dilate(image, kernel, iterations)
 
 
-def remove_generic_entities_in_image(image, generic_entities, type=None):
+def remove_generic_entities_in_image(image, generic_entities, type=None, preprocess=True):
     """
     Removes the given generic entities from the image. Uses the contours of the contained shapes in a generic entity.
     The generic entities that you want to be removed can be filtered by a type. If no type is given, all generic
@@ -421,7 +422,9 @@ def remove_generic_entities_in_image(image, generic_entities, type=None):
     :return: The image with the generic entitites removed
     """
     image = image.copy()
-    image = preprocess_image(image)
+
+    if preprocess:
+        image = preprocess_image(image)
 
     if type is not None:
         generic_entities = filter(lambda x: x.type == type, generic_entities)
