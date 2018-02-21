@@ -1,6 +1,7 @@
 from detector import util, draw_util
 from detector.detector.line_detector import LineDetector
 from detector.primitives.shape import Shape
+from detector.primitives.shape_type import ShapeType
 from detector.util import log
 from detector.converter.diagram_converter import DiagramConverter
 from detector.primitives.generic_entity import GenericEntity
@@ -9,6 +10,7 @@ from detector.primitives.generic_entity import GenericEntity
 class ClassDiagramTypes:
     CLASS_ENTITY = 0
     ASSOCIATION_ENTITY = 1
+    ASSOCIATION_ENTITY_ADVANCED = 2
 
 
 class ClassDiagramConverter(DiagramConverter):
@@ -16,6 +18,7 @@ class ClassDiagramConverter(DiagramConverter):
 
     STR_ASSOC_FROM = "ASSOCIATION_FROM"
     STR_ASSOC_TO = "ASSOCIATION_TO"
+    STR_ASSOC_PART = "ASSOCIATION_PART"
     STR_CLASS_NAME = "CLASS_NAME"
 
     def convert(self):
@@ -27,6 +30,10 @@ class ClassDiagramConverter(DiagramConverter):
         return self.generic_entities
 
     def _extract_classes(self):
+        """
+        Extracts the class entities from a class diagram sketch.
+        :return: An array of GenericEntities, were each GenericEntity contains a found class
+        """
         """
         Extracts the class entities from a class diagram sketch.
         :return: An array of GenericEntities, were each GenericEntity contains a found class
@@ -67,9 +74,10 @@ class ClassDiagramConverter(DiagramConverter):
         """
         # Remove class entitites in order to find associations
         img = util.remove_generic_entities_in_image(self.shape_detector.image, self.generic_entities, ClassDiagramTypes.CLASS_ENTITY)
-
-        simple_associations = self._extract_simple_associations(img)
         advanced_associations = self._extract_advanced_associations(img)
+
+        img = util.remove_generic_entities_in_image(img, advanced_associations, ClassDiagramTypes.ASSOCIATION_ENTITY_ADVANCED, preprocess=False)
+        simple_associations = self._extract_simple_associations(img)
 
         return simple_associations + advanced_associations
 
@@ -89,7 +97,6 @@ class ClassDiagramConverter(DiagramConverter):
         for l in lines:
             new_assoc = GenericEntity(ClassDiagramTypes.ASSOCIATION_ENTITY)
             new_assoc.add_shape(l)
-
             found_associations.append(new_assoc)
 
         log(f"{len(found_associations)} simple associations found")
@@ -102,6 +109,15 @@ class ClassDiagramConverter(DiagramConverter):
         :return: An array of GenericEntities, were each GenericEntity contains an extracted association
         """
         found_associations = []
+
+        # Extract inheritance shapes
+        for shape in self.shape_detector.shapes:
+            if shape.shape is ShapeType.TRIANGLE:
+                new_inheritance_assoc = GenericEntity(ClassDiagramTypes.ASSOCIATION_ENTITY_ADVANCED)
+                new_inheritance_assoc.add_shape(shape)
+                found_associations.append(new_inheritance_assoc)
+                log(f"Inheritance shape found: {shape}")
+
         log(f"{len(found_associations)} advanced associations found")
         return found_associations
 
@@ -112,12 +128,33 @@ class ClassDiagramConverter(DiagramConverter):
         log(f"Try linking classes with associations")
         class_entities = self.get_generic_entities(types=[ClassDiagramTypes.CLASS_ENTITY])
         assoc_entities = self.get_generic_entities(types=[ClassDiagramTypes.ASSOCIATION_ENTITY])
+        inher_entities = self.get_generic_entities(types=[ClassDiagramTypes.ASSOCIATION_ENTITY_ADVANCED])
 
+        remaining_assoc_entities = []
+
+        # Link lines with found advanced association shapes
+        for a in assoc_entities:
+            line = a.shapes[0]  # GenericEntity of type ASSOCIATION_ENTITY always has just one shape, which is a Line
+            line_start = line.start_xy()
+            line_end = line.end_xy()
+
+            # Link with inheritance
+            for c in inher_entities:
+                inheritance_bounding_box = c.bounding_box()
+
+                if util.is_point_in_area(line_start, inheritance_bounding_box) or util.is_point_in_area(line_end, inheritance_bounding_box):
+                    a.add_shape(c)
+                    log("Association part for inheritance association found")
+                else:
+                    remaining_assoc_entities.append(a)
+
+        # Link class entities with remaining associations
         for c in class_entities:
             class_bounding_box = c.bounding_box()
 
-            for a in assoc_entities:
-                line = a.shapes[0]  # GenericEntity of type ASSOCIATION always has just one shape, which is a Line
+            # ... with simple associations
+            for a in remaining_assoc_entities:
+                line = a.shapes[0]  # GenericEntity of type ASSOCIATION_ENTITY always has just one shape, which is a Line
                 line_start = line.start_xy()
                 line_end = line.end_xy()
 
@@ -128,6 +165,8 @@ class ClassDiagramConverter(DiagramConverter):
                 elif util.is_point_in_area(line_end, class_bounding_box):
                     a.set(ClassDiagramConverter.STR_ASSOC_TO, c)
                     log("TO association found")
+
+
 
     @classmethod
     def is_diagram(cls, shape_detector):
