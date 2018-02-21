@@ -45,7 +45,7 @@ class Shape:
         """
         return util.area_contour(self.contour)
 
-    def bounding_rect(self):
+    def bounding_box(self):
         """
         Returns the bounding rectangle of this contour.
         :return: Returns a touple in the form of (x, y, w, h)

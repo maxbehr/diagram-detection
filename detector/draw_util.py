@@ -3,18 +3,7 @@ import cv2
 from detector import util
 from detector.primitives.line import Line
 from detector.primitives.shape import Shape
-
-
-def draw_contours_on_image(contours, image, color=(0, 255, 0)):
-    """
-    Draws the given contours onto the given image,
-    :param contours: Contours that are drawn.
-    :param image: The image the contours are being drawn onto.
-    :return:
-    """
-
-    util.log(f"Draw {len(contours)} contours")
-    cv2.drawContours(image, contours, -1, color, 2)
+from detector.constants.constants import BOUNDING_BOX_ADJUSTMENT
 
 
 def draw_line(image, l, color=(0, 0, 255)):
@@ -140,5 +129,28 @@ def draw_entities_on_image(image, generic_entities):
                 image = draw_contours_on_image([s.contour], image)
             elif type(s) is Line:
                 image = draw_line(image, s)
+
+    return image
+
+
+def draw_bounding_boxes(image, generic_entities, adjustment=BOUNDING_BOX_ADJUSTMENT, labels=False):
+    """
+    Draws the bounding boxes of the given entities.
+    :param image: The image the bounding boxes are drawn on
+    :param generic_entities: The entities you want the bounding boxes to be drawn of. Only entities from type Shape are considered
+    :param adjustment: Will be applied to the bounding box size. Can be used to make the drawn bounding box smaller or bigger
+    :param labels: Boolean that defines if labels should be drawn (True), or not (False)
+    :return: A copy of the given image that contains the drawn bounding boxes
+    """
+    image = image.copy()
+
+    for e in generic_entities:
+        for s in e.shapes:
+            if type(s) is Shape:
+                bb_x, bb_y, bb_w, bb_h = e.bounding_box(adjustment=adjustment)
+                image = draw_rectangle(image, (bb_x, bb_y), (bb_x + bb_w, bb_y + bb_h), color=(255, 0, 0))
+
+                if labels:
+                    image = draw_text(image, f"Type {e.type}", (bb_x, bb_y - 10))
 
     return image
