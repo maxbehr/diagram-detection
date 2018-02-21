@@ -53,9 +53,9 @@ class ClassDiagramConverter(DiagramConverter):
                     new_class.set(ClassDiagramConverter.STR_CLASS_NAME, f"Class {class_counter}")
 
                     # Add shapes to class
-                    new_class.add_shape(Shape(group_value[0]))
-                    new_class.add_shape(Shape(group_value[1]))
-                    new_class.add_shape(Shape(group_value[2]))
+                    new_class.add_shape(self.shape_detector.create_shape(group_value[0]))
+                    new_class.add_shape(self.shape_detector.create_shape(group_value[1]))
+                    new_class.add_shape(self.shape_detector.create_shape(group_value[2]))
 
                     # new_class.set("name_contour", group_value[0])
                     # new_class.set("attribute_contour", group_value[1])
@@ -114,9 +114,9 @@ class ClassDiagramConverter(DiagramConverter):
         for shape in self.shape_detector.shapes:
             if shape.shape is ShapeType.TRIANGLE:
                 new_inheritance_assoc = GenericEntity(ClassDiagramTypes.ASSOCIATION_ENTITY_ADVANCED)
+                log(f"Advanced association found: {shape}")
                 new_inheritance_assoc.add_shape(shape)
                 found_associations.append(new_inheritance_assoc)
-                log(f"Inheritance shape found: {shape}")
 
         log(f"{len(found_associations)} advanced associations found")
         return found_associations

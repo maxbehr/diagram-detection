@@ -2,7 +2,10 @@ import cv2
 import imutils
 import os
 import time
+import string
+import random
 
+from detector.constants import constants
 from detector.primitives.shape_type import ShapeType
 import pytesseract
 from PIL import Image
@@ -11,9 +14,6 @@ import math
 
 EPSILON_FACTOR = 0.04
 """ Defines the accuracy for contour detection """
-
-OUTPUT_PATH = "output/"
-""" Defines the path images will be saved to """
 
 EROSION_BY = 5
 """ Amount pixel that are applied to bounding box of a contour when removing contours from image. Default is 5. """
@@ -168,12 +168,13 @@ def save_image(image, filename):
     :param filename: Name of the saved file.
     :return:
     """
-    cv2.imwrite(f"{OUTPUT_PATH}{filename}", image)
+    cv2.imwrite(f"{constants.OUTPUT_PATH}{filename}", image)
 
 
 def ocr(image):
-    if os.path.isfile(image):
-        text = pytesseract.image_to_string(Image.open(image))
+    path = constants.OUTPUT_PATH + image
+    if os.path.isfile(path):
+        text = pytesseract.image_to_string(Image.open(path))
         log("Found OCR text: {text}".format(text=text))
         return text
     else:
@@ -512,6 +513,15 @@ def is_point_in_area(p1, area):
     px, py = p1
     ax, ay, aw, ah = area
     return ax <= px <= ax+aw and ay <= py <= ay+ah
+
+
+def random_str(len=5):
+    """
+    Generates a random string of lowercase letters and returns it.
+    :param len: Defines the length of the random string. Default: 5
+    :return: The random string
+    """
+    return ''.join(random.choices(string.ascii_lowercase, k=len))
 
 
 def log(str):

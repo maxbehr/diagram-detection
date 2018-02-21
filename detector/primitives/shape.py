@@ -12,12 +12,18 @@ class Shape:
         """ Defines the contour index in the hierarchy list """
 
         self.shape = util.detect_shape(contour)
+        self.text = None
 
-        (x, y, w, h) = cv2.boundingRect(self.contour)
+        (x, y, w, h) = self.bounding_box()
         self.w = w
         self.h = h
         self.x = x
         self.y = y
+
+    def ocr(self):
+        filename = f"{self.shape_name()}_{util.random_str()}.png"
+        self.save_image(f"{filename}")
+        self.text = util.ocr(f"{filename}")
 
     def save_image(self, filename):
         """
@@ -25,7 +31,7 @@ class Shape:
         :param filename: Name of the saved file.
         :return:
         """
-        output_filename = f"{self.shape_name()}_{filename}"
+        output_filename = f"{filename}"
         util.save_image(self.image, output_filename)
 
     def remove_image(self):

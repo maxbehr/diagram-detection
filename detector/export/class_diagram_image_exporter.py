@@ -13,6 +13,11 @@ class ClassDiagramImageExporter(DiagramExporter):
         log(f"{len(class_entities)} class entitites")
         self.image = draw_util.draw_bounding_boxes(self.image, class_entities, labels=True)
 
+        # Extract text from class entities
+        for c in class_entities:
+            for s in c.shapes:
+                s.ocr()
+
         #   Label advanced associations
         inheritance_entities = self.converter.get_generic_entities(
             types=[ClassDiagramTypes.ASSOCIATION_ENTITY_ADVANCED])

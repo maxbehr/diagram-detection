@@ -74,9 +74,7 @@ class ShapeDetector:
 
         found_shapes = []
         for (i, c) in enumerate(cons):
-            shape = Shape(c)
-            x, y, w, h = cv2.boundingRect(c)
-            shape.set_image(self.image[y:y+h, x:x+w])
+            shape = self.create_shape(c)
             shape.contour_index = i
             found_shapes.append(shape)
 
@@ -159,6 +157,18 @@ class ShapeDetector:
 
     def sort_contours_by_parent(self):
         return util.get_sorted_contours_by_parent(self.contours, self.hierarchy)
+
+    def create_shape(self, contour):
+        """
+        Creates a new Shape instance with its image section and contour.
+        :param image:
+        :param contour:
+        :return: A Shape instance
+        """
+        shape = Shape(contour)
+        x, y, w, h = shape.bounding_box()
+        shape.set_image(self.image[y:y + h, x:x + w])
+        return shape
 
     def show_result(self):
         """
