@@ -1,5 +1,6 @@
 import detector.constants.constants
 from detector.constants import constants
+from detector.primitives.shape import Shape
 
 
 class GenericEntity:
@@ -32,11 +33,13 @@ class GenericEntity:
                             in order to adjust the size of the bounding box.
         :return: A tuple containing the xy-coordinates, width and height of the bounding box (x, y, w, h)
         """
-        min_y_shape = min(self.shapes, key=lambda shape: shape.y)
-        max_y_shape = max(self.shapes, key=lambda shape: shape.y)
+        shapes = [s for s in self.shapes if type(s) is Shape]
 
-        x = min(self.shapes, key=lambda shape: shape.x).x
-        w = max(self.shapes, key=lambda shape: shape.w).w
+        min_y_shape = min(shapes, key=lambda shape: shape.y)
+        max_y_shape = max(shapes, key=lambda shape: shape.y)
+
+        x = min(shapes, key=lambda shape: shape.x).x
+        w = max(shapes, key=lambda shape: shape.w).w
         y = min_y_shape.y
         h = max_y_shape.y + max_y_shape.h - min_y_shape.y
 

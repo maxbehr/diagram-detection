@@ -8,26 +8,34 @@ class ClassDiagramImageExporter(DiagramExporter):
     EXPORTER_ID= "class_diagram_image_exporter"
 
     def export(self):
+        log("Exporting class diagram to image")
         #   Label classes
         class_entities = self.converter.get_generic_entities(types=[ClassDiagramTypes.CLASS_ENTITY])
-        log(f"{len(class_entities)} class entitites")
+        log(f"\t... with {len(class_entities)} classes")
         self.image = draw_util.draw_bounding_boxes(self.image, class_entities, labels=True)
 
         # Extract text from class entities
-        for c in class_entities:
-            for s in c.shapes:
-                s.ocr()
+        #for c in class_entities:
+        #    for s in c.shapes:
+        #        s.ocr()
 
         #   Label advanced associations
         inheritance_entities = self.converter.get_generic_entities(
             types=[ClassDiagramTypes.ASSOCIATION_ENTITY_ADVANCED])
         self.image = draw_util.draw_bounding_boxes(self.image, inheritance_entities, labels=True)
 
-        #   Draw association entities on image
+        #   Draw normal entities
         association_entities = self.converter.get_generic_entities(types=[ClassDiagramTypes.ASSOCIATION_ENTITY])
-        log(f"{len(association_entities)} association entitites")
+        log(f"\t... with {len(association_entities)} normal associations")
         self.image = draw_util.draw_entities_on_image(self.image, association_entities)
 
+        #   Draw advanced entities
+        advanced_association_entities = self.converter.get_generic_entities(types=[ClassDiagramTypes.ASSOCIATION_ENTITY_ADVANCED])
+        log(f"\t... with {len(advanced_association_entities)} advanced associations")
+        self.image = draw_util.draw_entities_on_image(self.image, advanced_association_entities)
+
+        #   Print relations between classes
+        association_entities = association_entities + advanced_association_entities
         for i, assoc in enumerate(association_entities):
             from_class = assoc.get(ClassDiagramConverter.STR_ASSOC_FROM)
             to_class = assoc.get(ClassDiagramConverter.STR_ASSOC_TO)

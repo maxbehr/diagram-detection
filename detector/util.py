@@ -515,6 +515,26 @@ def is_point_in_area(p1, area):
     return ax <= px <= ax+aw and ay <= py <= ay+ah
 
 
+def do_bounding_boxes_intersect(bb_a, bb_b):
+    """
+    Checks if the given bounding boxes intersect each other.
+    :param bb_a: Bounding box A
+    :param bb_b: Bounding box B
+    :return: True if the bounding boxes intersect each other, False otherwise.
+    """
+    a_top = bb_a[1]
+    a_right = bb_a[0]+bb_a[2]
+    a_bottom = bb_a[1]+bb_a[3]
+    a_left = bb_a[0]
+
+    b_top = bb_b[1]
+    b_right = bb_b[0]+bb_b[2]
+    b_bottom = bb_b[1]+bb_b[3]
+    b_left = bb_b[0]
+
+    return not (b_left > a_right or b_right < a_left or b_top > a_bottom or b_bottom > a_top)
+
+
 def random_str(len=5):
     """
     Generates a random string of lowercase letters and returns it.
