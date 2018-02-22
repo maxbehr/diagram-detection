@@ -1,12 +1,12 @@
 import cv2
 
 from detector import util
+from detector.constants import constants
 from detector.primitives.line import Line
 from detector.primitives.shape import Shape
-from detector.constants.constants import BOUNDING_BOX_ADJUSTMENT
 
 
-def draw_line(image, l, color=(0, 0, 255)):
+def draw_line(image, l, color=constants.COLOR_RED):
     image = image.copy()
     start = l.start_xy()
     end = l.end_xy()
@@ -14,7 +14,7 @@ def draw_line(image, l, color=(0, 0, 255)):
     return image
 
 
-def draw_text(image, text, pos, size=0.5, color=(0,0,0), thickness=1):
+def draw_text(image, text, pos, size=0.4, color=(0,0,0), thickness=1):
     """
     Creates a copy of the given image and draws text on it.
     Wraps the OpenCV putText method.
@@ -115,7 +115,7 @@ def draw_labeled_lines(image, lines, color=(0, 0, 255), line_width=2, toggle_lin
     return image
 
 
-def draw_entities_on_image(image, generic_entities):
+def draw_entities_on_image(image, generic_entities, color=constants.COLOR_BLUE):
     """
     Draws the contours of all contained shapes of the given generic entities.
     :param image: The image the contours will be drawn on
@@ -126,14 +126,14 @@ def draw_entities_on_image(image, generic_entities):
     for e in generic_entities:
         for s in e.shapes:
             if type(s) is Shape:
-                image = draw_contours_on_image([s.contour], image)
+                image = draw_contours_on_image([s.contour], image, color=color)
             elif type(s) is Line:
-                image = draw_line(image, s)
+                image = draw_line(image, s, color=color)
 
     return image
 
 
-def draw_bounding_boxes(image, generic_entities, adjustment=BOUNDING_BOX_ADJUSTMENT, labels=False):
+def draw_bounding_boxes(image, generic_entities, adjustment=constants.DRAWN_BOUNDING_BOX_ADJUSTMENT, color=constants.COLOR_BLUE, labels=False):
     """
     Draws the bounding boxes of the given entities.
     :param image: The image the bounding boxes are drawn on
@@ -148,9 +148,14 @@ def draw_bounding_boxes(image, generic_entities, adjustment=BOUNDING_BOX_ADJUSTM
         for s in e.shapes:
             if type(s) is Shape:
                 bb_x, bb_y, bb_w, bb_h = e.bounding_box(adjustment=adjustment)
-                image = draw_rectangle(image, (bb_x, bb_y), (bb_x + bb_w, bb_y + bb_h), color=(255, 0, 0))
+                image = draw_rectangle(image, (bb_x, bb_y), (bb_x + bb_w, bb_y + bb_h), color=color)
 
                 if labels:
-                    image = draw_text(image, f"Type {e.type}", (bb_x, bb_y - 10))
+                    name = "" if not e.get(constants.STR_GENERIC_ENTITY_LABEL_NAME) else e.get(constants.STR_GENERIC_ENTITY_LABEL_NAME)
+                    image = draw_text(image, f"{name} ({e.type})", (bb_x, bb_y - 5))
+
+            elif type(s) is Line:
+                image = draw_line(image, s, color)
+
 
     return image

@@ -56,7 +56,7 @@ class ClassDiagramConverter(DiagramConverter):
                 # Create class entities
                 if len(group_value) == 3:
                     new_class = GenericEntity(ClassDiagramTypes.CLASS_ENTITY)
-                    new_class.set(ClassDiagramConverter.STR_CLASS_NAME, f"Class {class_counter}")
+                    new_class.set(constants.STR_GENERIC_ENTITY_LABEL_NAME, f"Class {class_counter}")
 
                     # Add shapes to class
                     new_class.add_shape(self.shape_detector.create_shape(group_value[0]))
@@ -119,10 +119,10 @@ class ClassDiagramConverter(DiagramConverter):
         shapes, _, _ = self.shape_detector.find_shapes_in_image(image)
         for shape in shapes:
             if shape.shape is ShapeType.TRIANGLE or shape.shape is ShapeType.RECTANGLE:
-                new_inheritance_assoc = GenericEntity(ClassDiagramTypes.ASSOCIATION_SYMBOL)
                 log(f"Advanced association found: {shape}")
-                new_inheritance_assoc.add_shape(shape)
-                found_associations.append(new_inheritance_assoc)
+                assoc = GenericEntity(ClassDiagramTypes.ASSOCIATION_SYMBOL)
+                assoc.add_shape(shape)
+                found_associations.append(assoc)
 
         log(f"{len(found_associations)} advanced associations found")
         return found_associations
@@ -144,7 +144,14 @@ class ClassDiagramConverter(DiagramConverter):
                 symbol_bb = s.bounding_box()
 
                 if util.is_point_in_area(line_start, symbol_bb) or util.is_point_in_area(line_end, symbol_bb):
-                    l.add_shape(s.shapes[0])    # TODO: Don't assume we have only one shape!
+                    s = s.shapes[0]    # TODO: Don't assume we have only one shape!
+                    l.add_shape(s)
+
+                    if s.shape is ShapeType.TRIANGLE:
+                        l.set(constants.STR_GENERIC_ENTITY_LABEL_NAME, "Inheritance")
+                    elif s.shape is ShapeType.RECTANGLE:
+                        l.set(constants.STR_GENERIC_ENTITY_LABEL_NAME, "Aggregation")
+
                     l.type = ClassDiagramTypes.ASSOCIATION_ENTITY_ADVANCED # Change type from simple to advanced association
                     log("Association line was joined with symbol")
 
@@ -159,7 +166,7 @@ class ClassDiagramConverter(DiagramConverter):
 
         # Link class entities with remaining associations
         for c in class_entities:
-            class_bounding_box = c.bounding_box(adjustment=100)
+            class_bounding_box = c.bounding_box(adjustment=constants.BOUNDING_BOX_ADJUSTMENT)
 
             # ... with advanced associations
             for a in advanced_entities:
