@@ -532,7 +532,7 @@ def do_bounding_boxes_intersect(bb_a, bb_b):
     b_bottom = bb_b[1]+bb_b[3]
     b_left = bb_b[0]
 
-    return not (b_left > a_right or b_right < a_left or b_top > a_bottom or b_bottom > a_top)
+    return not (b_left > a_right or b_right < a_left or b_top > a_bottom or b_bottom < a_top)
 
 
 def random_str(len=5):

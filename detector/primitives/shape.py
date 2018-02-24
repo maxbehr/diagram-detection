@@ -24,6 +24,7 @@ class Shape:
         filename = f"{self.shape_name()}_{util.random_str()}.png"
         self.save_image(f"{filename}")
         self.text = util.ocr(f"{filename}")
+        return self.text
 
     def save_image(self, filename):
         """

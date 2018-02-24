@@ -172,8 +172,9 @@ class ClassDiagramConverter(DiagramConverter):
             for a in advanced_entities:
                 for advanced_shape in a.shapes:
                     if type(advanced_shape) is Shape:
-                        if util.do_bounding_boxes_intersect(advanced_shape.bounding_box(), class_bounding_box) or \
-                            util.do_bounding_boxes_intersect(class_bounding_box, advanced_shape.bounding_box()):
+                        advanced_bounding_box = advanced_shape.bounding_box()
+
+                        if util.do_bounding_boxes_intersect(advanced_bounding_box, class_bounding_box) or util.do_bounding_boxes_intersect(class_bounding_box, advanced_bounding_box):
                             a.set(ClassDiagramConverter.STR_ASSOC_FROM, c)
 
                     elif type(advanced_shape) is Line:
@@ -196,8 +197,6 @@ class ClassDiagramConverter(DiagramConverter):
                 elif util.is_point_in_area(line_end, class_bounding_box):
                     a.set(ClassDiagramConverter.STR_ASSOC_TO, c)
                     log("TO association found")
-
-
 
     @classmethod
     def is_diagram(cls, shape_detector):
