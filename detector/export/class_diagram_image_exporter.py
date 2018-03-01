@@ -16,9 +16,10 @@ class ClassDiagramImageExporter(DiagramExporter):
         self.image = draw_util.draw_bounding_boxes(self.image, class_entities, labels=True)
 
         # Extract text from class entities
-        #for c in class_entities:
-        #    for s in c.shapes:
-        #        s.ocr()
+        if self.opts['ocr']:
+            for c in class_entities:
+                for s in c.shapes:
+                    s.ocr()
 
         #   Draw bounding boxes of advanced associations
         advanced_association_entities = self.converter.get_generic_entities(
@@ -38,7 +39,8 @@ class ClassDiagramImageExporter(DiagramExporter):
             to_class = assoc.get(ClassDiagramConverter.STR_ASSOC_TO)
 
             if from_class is not None and to_class is not None:
-                log(f"Association {i} points from {from_class.get(constants.STR_GENERIC_ENTITY_LABEL_NAME)} "
+                log(f"Association {i} of type {assoc.get(constants.STR_GENERIC_ENTITY_LABEL_NAME)} points "
+                    f"from {from_class.get(constants.STR_GENERIC_ENTITY_LABEL_NAME)} "
                     f"to {to_class.get(constants.STR_GENERIC_ENTITY_LABEL_NAME)}")
 
         return self.image
