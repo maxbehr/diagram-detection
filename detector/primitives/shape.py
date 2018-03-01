@@ -23,7 +23,7 @@ class Shape:
     def ocr(self):
         filename = f"{self.shape_name()}_{util.random_str()}.png"
         self.save_image(f"{filename}")
-        self.text = util.ocr(f"{filename}")
+        self.text = util.ocr(self.image)
         return self.text
 
     def save_image(self, filename):

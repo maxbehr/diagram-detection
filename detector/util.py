@@ -172,6 +172,22 @@ def save_image(image, filename):
 
 
 def ocr(image):
+    """
+    Apply OCR to an image.
+    :param image: Image object
+    :return: String that was recognized
+    """
+    text = pytesseract.image_to_string(Image.fromarray(image))
+    log("Found OCR text: {text}".format(text=text))
+    return text
+
+
+def ocr2(image):
+    """
+    Apply OCR to an image that is saved in the output path.
+    :param image: Image name
+    :return: String that was recognized
+    """
     path = constants.OUTPUT_PATH + image
     if os.path.isfile(path):
         text = pytesseract.image_to_string(Image.open(path))
