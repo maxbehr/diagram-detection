@@ -16,7 +16,7 @@ class ClassDiagramImageExporter(DiagramExporter):
         self.image = draw_util.draw_bounding_boxes(self.image, class_entities, labels=True)
 
         # Extract text from class entities
-        if self.opts['ocr']:
+        if 'ocr' in self.opts and self.opts['ocr']:
             for c in class_entities:
                 for s in c.shapes:
                     s.ocr()

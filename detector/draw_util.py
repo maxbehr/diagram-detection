@@ -152,7 +152,7 @@ def draw_bounding_boxes(image, generic_entities, adjustment=constants.DRAWN_BOUN
 
                 if labels:
                     name = "" if not e.get(constants.STR_GENERIC_ENTITY_LABEL_NAME) else e.get(constants.STR_GENERIC_ENTITY_LABEL_NAME)
-                    image = draw_text(image, f"{name} ({e.type})", (bb_x, bb_y - 5))
+                    image = draw_text(image, f"{name}", (bb_x, bb_y - 5))
 
             elif type(s) is Line:
                 image = draw_line(image, s, color)

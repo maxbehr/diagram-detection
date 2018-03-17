@@ -276,7 +276,7 @@ def preprocess_image(image):
     #cv2.imshow("gray", image)
 
     # Threshold image
-    _, image = cv2.threshold(image, 135, 255, cv2.THRESH_BINARY_INV)
+    _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY_INV)
     #image = cv2.dilate(image, (15, 15), iterations=3)
     #cv2.imshow("thresh", image)
 
@@ -290,7 +290,7 @@ def create_binary_img(img):
     :return: Binary image of the given image
     """
     image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    _, image = cv2.threshold(img, 135, 255, cv2.THRESH_BINARY_INV)
+    _, image = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
     return image
 
 
