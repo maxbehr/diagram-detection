@@ -4,7 +4,10 @@ class ShapeType:
     SQUARE = 2
     RECTANGLE = 3
     PENTAGON = 4
-    CIRCLE = 5
+    HEXAGON = 5
+    HEPTAGON = 6
+    OCTAGON = 7
+    CIRCLE = 8
 
     @staticmethod
     def to_s(shape_type):
@@ -14,7 +17,10 @@ class ShapeType:
             2: 'square',
             3: 'rectangle',
             4: 'pentagon',
-            5: 'circle'
+            5: 'hexagon',
+            6: 'heptagon',
+            7: 'octagon',
+            8: 'circle'
         }
 
         return names[shape_type]

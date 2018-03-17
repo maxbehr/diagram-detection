@@ -97,11 +97,11 @@ def detect_shape(c):
     """
     peri = cv2.arcLength(c, True)
     approx = cv2.approxPolyDP(c, EPSILON_FACTOR * peri, True)
+    edges = len(approx)
 
-    if len(approx) == 3:
-        return ShapeType.TRIANGLE
+    if edges == 3: return ShapeType.TRIANGLE
 
-    if len(approx) == 4:
+    elif edges == 4:
         (x, y, w, h) = cv2.boundingRect(approx)
         ratio = w / float(h)
 
@@ -110,11 +110,11 @@ def detect_shape(c):
         else:
             return ShapeType.RECTANGLE
 
-    if len(approx) == 5:
-        return ShapeType.PENTAGON
-
-    if len(approx) >= 6:
-        return ShapeType.CIRCLE
+    elif edges == 5: return ShapeType.PENTAGON
+    elif edges == 6: return ShapeType.HEXAGON
+    elif edges == 7: return ShapeType.HEPTAGON
+    elif edges == 8: return ShapeType.OCTAGON
+    elif edges >= 9: return ShapeType.CIRCLE
 
     return ShapeType.UNIDENTIFIED
 
@@ -257,7 +257,8 @@ def create_working_copy_of_image(image):
     :param image: Image the copy is created from.
     :return: Returns the resized image
     """
-    return imutils.resize(image, width=700)
+    return image
+    #return imutils.resize(image, width=700)
 
 
 def preprocess_image(image):
