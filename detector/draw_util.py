@@ -133,6 +133,24 @@ def draw_entities_on_image(image, generic_entities, color=constants.COLOR_BLUE):
     return image
 
 
+def draw_labels(image, generic_entities, adjustment=constants.DRAWN_BOUNDING_BOX_ADJUSTMENT):
+    """
+    Draws the entity names of the generic entities onto the image.
+    :param image: The image you want to draw the text on
+    :param generic_entities: The generic entities you want the names to be drawn of
+    :param adjustment: Bounding Box adjustment
+    :return: A copy of the given image that contains the drawn labels
+    """
+    image = image.copy()
+    for e in generic_entities:
+        bb_x, bb_y, bb_w, bb_h = e.bounding_box(adjustment=adjustment)
+        for s in e.shapes:
+            name = "" if not e.get(constants.STR_GENERIC_ENTITY_LABEL_NAME) else e.get(
+                constants.STR_GENERIC_ENTITY_LABEL_NAME)
+            image = draw_text(image, f"{name}", (bb_x, bb_y - 5))
+    return image
+
+
 def draw_bounding_boxes(image, generic_entities, adjustment=constants.DRAWN_BOUNDING_BOX_ADJUSTMENT, color=constants.COLOR_BLUE, labels=False):
     """
     Draws the bounding boxes of the given entities.
@@ -157,5 +175,28 @@ def draw_bounding_boxes(image, generic_entities, adjustment=constants.DRAWN_BOUN
             elif type(s) is Line:
                 image = draw_line(image, s, color)
 
+    return image
+
+
+def draw(image, generic_entities, draw_label=True, draw_bounding_box=True, draw_contour=False):
+    """
+    Generic draw method to draw labels, bounding boxes and the contours of the given entities.
+    :param image: The image everything is drawn on.
+    :param generic_entities: The entities
+    :param draw_label: Defines whether labels are being drawn
+    :param draw_bounding_box: Defines whether the bounding boxes of the entities are being drawn
+    :param draw_contour: Defines whether the contours of the entitites are being drawn
+    :return: A copy of the given image that everything is drawn of
+    """
+    image = image.copy()
+
+    if draw_label:
+        image = draw_labels(image, generic_entities)
+
+    if draw_bounding_box:
+        image = draw_bounding_boxes(image, generic_entities)
+
+    if draw_contour:
+        image = draw_entities_on_image(image, generic_entities)
 
     return image
