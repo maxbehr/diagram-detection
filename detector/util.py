@@ -306,6 +306,57 @@ def has_contour_children(contour_index, hierarchy):
     return contour_index in all_parent_ids[0]
 
 
+def has_no_contour_children(contour_index, hierarchy):
+    """
+    Checks if the given index appears as child_index in the given hierarchy.
+
+    :param contour_index: Index of the contour we want to check, whether it has some children.
+    :param hierarchy: Hierarchy, we want to check the given contour_index
+                        hierarchy[0][i][0] -> Next
+                        hierarchy[0][i][1] -> Previous
+                        hierarchy[0][i][2] -> First_Child
+                        hierarchy[0][i][3] -> Parent
+
+    :return: True if given contour has children, False otherwise
+    """
+    all_contours_w_no_children = get_contours_w_child(hierarchy, -1)
+    return contour_index in all_contours_w_no_children
+
+
+def get_contours_w_child(hierarchy, child_index):
+    """
+    Returns the indexes of the contours that have the given child_index as "First_Child" index
+
+    :param hierarchy: Hierachy that contains all contours
+                        hierarchy[0][i][0] -> Next
+                        hierarchy[0][i][1] -> Previous
+                        hierarchy[0][i][2] -> First_Child
+                        hierarchy[0][i][3] -> Parent
+
+    :param child_index: The child index we want to look for
+    :return: A list, that contains the indexes of the contours
+    """
+    contours = [i for i, v in enumerate(hierarchy[0]) if hierarchy[0][i][2] == child_index]
+    return contours
+
+
+def get_contours_w_parent(hierarchy, parent_index):
+    """
+    Returns the indexes of the contours that have the given parent_index as "Parent" index
+
+    :param hierarchy: Hierachy that contains all contours
+                        hierarchy[0][i][0] -> Next
+                        hierarchy[0][i][1] -> Previous
+                        hierarchy[0][i][2] -> First_Child
+                        hierarchy[0][i][3] -> Parent
+
+    :param parent_index: The parent index we want to look for
+    :return: A list, that contains the indexes of the contours
+    """
+    contours = [i for i, v in enumerate(hierarchy[0]) if hierarchy[0][i][3] == parent_index]
+    return contours
+
+
 def get_contour_children_for(contour_index, hierarchy):
     """
     Returns the hierachy data of all child contours of the given contour_index from the given hierarchy.
