@@ -5,12 +5,15 @@ import detector.util as util
 
 
 class ShapeDetector:
-    def __init__(self, image=None):
+    def __init__(self, image=None, options=None):
         self.orig_image = None
         """ Reference to the original image. A working copy will be created from this image. """
 
         self.image = None
         """ Working copy of the original image. All image processing happens will be applied on this image. """
+
+        self.options = options
+        """ Options that define the behaviour of the ShapeDetector. """
 
         self.preprocessed_image = None
         """ Preprocessed working copy image. """
