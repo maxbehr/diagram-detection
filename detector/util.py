@@ -114,7 +114,7 @@ def detect_shape(c):
     elif edges == 6: return ShapeType.HEXAGON
     elif edges == 7: return ShapeType.HEPTAGON
     elif edges == 8: return ShapeType.OCTAGON
-    elif edges >= 9: return ShapeType.CIRCLE
+    elif 9 <= edges < 100: return ShapeType.CIRCLE
 
     return ShapeType.UNIDENTIFIED
 
@@ -257,8 +257,7 @@ def create_working_copy_of_image(image):
     :param image: Image the copy is created from.
     :return: Returns the resized image
     """
-    return image
-    #return imutils.resize(image, width=700)
+    return imutils.resize(image, width=700)
 
 
 def preprocess_image(image):
@@ -276,10 +275,11 @@ def preprocess_image(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     #cv2.imshow("gray", image)
 
+    # Erode
+    image = erode(image, kernel=np.ones((3,3)))
+
     # Threshold image
     _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY_INV)
-    #image = cv2.dilate(image, (15, 15), iterations=3)
-    #cv2.imshow("thresh", image)
 
     return image
 
