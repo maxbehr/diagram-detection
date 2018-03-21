@@ -47,7 +47,7 @@ def draw_rectangle(image, p1, p2, color=(0, 0, 255), thickness=2):
     return image
 
 
-def draw_shapes_on_image(shapes, image):
+def draw_shapes_on_image(image, shapes):
     """
     Draws the given shapes on the given image and returns it.
     :param shapes: Shapes you want to draw.
@@ -56,7 +56,7 @@ def draw_shapes_on_image(shapes, image):
     """
     image = image.copy()
     contours = [s.contour for s in shapes]
-    draw_contours_on_image(contours, image)
+    image = draw_contours_on_image(contours, image)
     return image
 
 
@@ -88,7 +88,7 @@ def draw_labeled_contours(contours, hierachy, image, color=(0, 0, 255)):
     return image
 
 
-def draw_labeled_lines(image, lines, color=(0, 0, 255), line_width=2, toggle_line_drawing=True, toggle_label_drawing=True):
+def draw_labeled_lines(image, lines, color=(0, 0, 255), line_width=2, draw_lines=True, draw_labels=True):
     """
     Draws the given lines onto the given image. Labels them as well.
     :param image: Image you want the lines to be drawn on
@@ -104,10 +104,10 @@ def draw_labeled_lines(image, lines, color=(0, 0, 255), line_width=2, toggle_lin
         start = l.start_xy()
         end = l.end_xy()
 
-        if toggle_line_drawing:
+        if draw_lines:
             cv2.line(image, start, end, color, line_width)
 
-        if toggle_label_drawing:
+        if draw_labels:
             x = int(start[0])
             y = int(start[1])
             cv2.putText(image, str(i), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1, cv2.LINE_AA)
