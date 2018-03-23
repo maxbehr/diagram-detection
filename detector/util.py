@@ -1,5 +1,4 @@
 import cv2
-import imutils
 import os
 import time
 import string
@@ -257,7 +256,30 @@ def create_working_copy_of_image(image):
     :param image: Image the copy is created from.
     :return: Returns the resized image
     """
-    return imutils.resize(image, width=700)
+    return resize(image, width=700)
+
+
+def resize(image, width=None, height=None):
+    """
+    Resizes the given image either to the given width or height.
+    :param image: Image thats gonna be resized.
+    :param width: The width the resized image.
+    :param height: The height of the resized image.
+    :return: Resized image
+    """
+    if width is None and height is None:
+        return image
+
+    h, w = image.shape[:2]
+    if width is None:
+        factor = height / float(h)
+        new_dim = (int(factor*w), height)
+    else:
+        factor = width / float(w)
+        new_dim = (width, int(factor*h))
+
+    log(f"Resize image to {new_dim}")
+    return cv2.resize(image, new_dim, interpolation=cv2.INTER_AREA)
 
 
 def preprocess_image(image):
@@ -372,27 +394,6 @@ def get_contour_children_for(contour_index, hierarchy):
             children[key] = h
 
     return children
-
-
-def get_sorted_contours_for_hierachy_entries(contours, hierarchy_entries, sort_method="top-to-bottom"):
-    """
-    For all given hierarchy entries (data from the hierarchy list for a contour), give the correct contour in the given
-    contours list. Sort and return them afterwards. Only as many contours are returned as hierarchy entries in the
-    given list exist.
-    :param contours: List of all contours
-    :param hierarchy_entries: Dict that contains all the entries
-                    key: index of the contour inside the contours list
-                    value: hierarchy information of the contour
-    :param sort_method: Defines how we want the contours to be returned, default: "top-to-bottom"
-    :return: List of all sorted contours, that correspond to the given hierarchy dict
-    """
-    mixed = []
-
-    for key, he in hierarchy_entries.items():
-        mixed.append(contours[int(key)])
-
-    mixed = imutils.contours.sort_contours(mixed, method=sort_method)[0]
-    return mixed
 
 
 def get_sorted_contours_by_parent(contours, hierarchy, discard_contours_without_parent=True):

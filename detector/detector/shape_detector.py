@@ -58,22 +58,12 @@ class ShapeDetector:
 
         :return: Array with all found shapes
         """
-        # Holds the area of all rects that were defined as class primitives rectangles
-        area_rects = 0
-        # img, contours, hierarchy = detect_contours(proc_image)
         im, cnts, hierarchy = detect_contours(image)
-
-        #cons = cnts[0] if imutils.is_cv2() else cnts[1]
-        # TODO: Why are we using cnts when creating the bounding rects instead of cons? No openCV version check needed?
-
-        # TODO: Currently, we aren't sorting the contours anymore, but rather we are creating bounding rects for all contours.
 
         # Try creating bounding rect for all contours in order to then get all contours for which we could create
         # a bounding rect
         bounding_boxes = [cv2.boundingRect(c) for c in cnts]
         cons = [cnts[i] for i, v in enumerate(bounding_boxes)]
-
-        #cons = contours.sort_contours(cnts, method="left-to-right")[0]
 
         found_shapes = []
         for (i, c) in enumerate(cons):
