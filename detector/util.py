@@ -14,7 +14,7 @@ import math
 EPSILON_FACTOR = 0.04
 """ Defines the accuracy for contour detection """
 
-EROSION_BY = 5
+EROSION_BY = 8
 """ Amount pixel that are applied to bounding box of a contour when removing contours from image. Default is 5. """
 
 CONTOUR_REMOVAL_COLOR = (0,0,0)
@@ -256,7 +256,7 @@ def create_working_copy_of_image(image):
     :param image: Image the copy is created from.
     :return: Returns the resized image
     """
-    return resize(image, width=700)
+    return resize(image, width=1024)
 
 
 def resize(image, width=None, height=None):
