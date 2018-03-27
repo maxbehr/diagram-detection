@@ -21,6 +21,9 @@ class ClassDiagramTypes:
 class ClassDiagramConverter(DiagramConverter):
     CONVERTER_TYPE = "class_diagram"
 
+    MIN_AREA_CLASS_RECTANGLES = 50
+    """ Defines the minimum area a rectangle needs to have in order to be noticed as part of a class"""
+
     STR_ASSOC_FROM = "ASSOCIATION_FROM"
     STR_ASSOC_TO = "ASSOCIATION_TO"
     STR_ASSOC_PART = "ASSOCIATION_PART"
@@ -50,6 +53,7 @@ class ClassDiagramConverter(DiagramConverter):
         sorted_contours = self.shape_detector.sort_contours_by_parent()
         class_counter = 0
         for k, v in sorted_contours.items():
+            v = [v for k,v in enumerate(v) if util.area_contour(v) > ClassDiagramConverter.MIN_AREA_CLASS_RECTANGLES]
             contour_groups = util.group_contours_by_x_pos(v)
 
             for group_key, group_value in contour_groups.items():
